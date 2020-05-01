@@ -412,7 +412,7 @@ void Module::StaffIndexModule() {
 	cout << "\t\tAvailable Action :\n\n";
 	cout << "\t\t1 = Item Inventory(DEV)\n";
 	cout << "\t\t2 = Application(DEV)\n";
-	cout << "\t\t3 = (NOT)\n";
+	cout << "\t\t3 = Staff(DEV)\n";
 	cout << "\t\t4 = Exit\n";
 	cout << "\t\tEnter your option [1, 2, 3, 4, 5] : ";
 	cin >> this->choose;
@@ -431,6 +431,7 @@ void Module::StaffIndexModule() {
 		this->ApplicationModule();
 		break;
 	case 3:
+		this->StaffAddModule();
 		break;
 	case 4:
 		this->IndexModule();
@@ -441,6 +442,46 @@ void Module::StaffIndexModule() {
 		goto repeatFunction;
 		break;
 	}
+
+}
+
+void Module::StaffAddModule() {
+	HeaderModule("Staff Add Module");
+
+	Staff newStaff;
+
+	if (this->staff.ROLE_ID.ID == 1) {
+		cout << "\t\tRole\n";
+		cout << "[1=Doctor, 2=Nurse] : ";
+		cin >> newStaff.ROLE_ID.ID;
+	}
+	else {
+		newStaff.ROLE_ID.ID = 2;
+	}
+
+	cout << "\t\tFirst name : ";
+	cin >> newStaff.FIRSTNAME;
+
+	cout << "\t\tLast name : ";
+	cin >> newStaff.LASTNAME;
+
+	reBirth:
+	cout << "\t\tBirthdate\n";
+	cout << "\t\t[DD/MM/YYYY] : \n";
+	cin >> newStaff.BIRTHDATE;
+
+	if (!this->command.ValidDate(newStaff.BIRTHDATE)) {
+		cout << "\t\t***Invalid Date Format***\n";
+		Sleep(1000);
+		goto reBirth;
+	}
+
+	cout << "\t\tPassword  : ";
+	cin >> newStaff.PASSWORD;
+
+	newStaff.EMAIL = newStaff.FIRSTNAME + newStaff.LASTNAME[0] + "@utem.edu.my";
+
+	//will add command hire;
 
 }
 

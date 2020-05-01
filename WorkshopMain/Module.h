@@ -81,6 +81,11 @@ public:
 	//Menu utama untuk staff
 	void StaffIndexModule();
 
+	//Staff Add Module
+	//Tambah Staff
+	void StaffAddModule();
+
+
 	//Item Iventory
 	//Nak letak barang baru @ Nak Refill barang tu
 	//Hanya boleh diaccess oleh Doctor-Type
