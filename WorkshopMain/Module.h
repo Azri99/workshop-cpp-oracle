@@ -17,6 +17,10 @@ private:
 	Item			 item;
 	Content			 content;
 	FirstAid		 faid;
+	string			 validint = "\t\t***Invalid Integer***\n";
+	string			 validcom = "\t\t***Invalid Combination***\n";
+	string			 validdate = "\t\t***Invalid Date Format***\n";
+	string			 validemail = "\t\t***Invalid Email***\n";
 public:
 
 	Module();

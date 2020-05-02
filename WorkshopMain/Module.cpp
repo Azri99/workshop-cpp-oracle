@@ -43,7 +43,7 @@ repeatFunction:
 	cin >> this->choose;
 
 	if (!this->command.ValidInteger(this->choose)) {
-		cout << "\t\t***Invalid Integer***\n";
+		cout << this->validint;
 		Sleep(1000);
 		goto repeatFunction;
 	}
@@ -60,7 +60,7 @@ repeatFunction:
 		this->ExitModule();
 		break;
 	default:
-		cout << "\t\t***Invalid Combination***\n";
+		cout << this->validcom;
 		Sleep(1000);
 		goto repeatFunction;
 		break;
@@ -84,7 +84,7 @@ repeatFunction:
 	cin >> this->choose;
 
 	if (!this->command.ValidInteger(this->choose)) {
-		cout << "\t\t***Invalid Integer***\n";
+		cout << this->validint;
 		Sleep(1000);
 		goto repeatFunction;
 	}
@@ -100,7 +100,7 @@ repeatFunction:
 		this->IndexModule();
 		break;
 	default:
-		cout << "\t\t***Invalid Combination***\n";
+		cout << this->validcom;
 		Sleep(1000);
 		goto repeatFunction;
 		break;
@@ -124,7 +124,7 @@ repeatId:
 		cin >> this->choose;
 
 		if (!this->command.ValidInteger(this->choose)) {
-			cout << "\t\t***Invalid Integer***\n";
+			cout << validint;
 			Sleep(1000);
 			goto repeatErr;
 		}
@@ -160,7 +160,7 @@ repeatId:
 	cin >> this->applicant.CONTACT;
 
 	if (!this->command.ValidEmail(this->applicant.CONTACT)) {
-		cout << "\t\t***Invalid Email***\n";
+		cout << validemail;
 		Sleep(1000);
 		goto repeatEmail;
 	}
@@ -192,7 +192,7 @@ repeatFunction:
 		cin >> this->choose;
 		
 		if (!this->command.ValidInteger(this->choose)) {
-			cout << "\t\t***Invalid Integer***\n";
+			cout << validint;
 			Sleep(1000);
 			goto repeatTry;
 		}
@@ -227,7 +227,7 @@ repeatFunction:
 	cin >> this->choose;
 	
 	if (!this->command.ValidInteger(this->choose)) {
-		cout << "\t\t***Invalid Integer***\n";
+		cout << this->validint;
 		Sleep(1000);
 		goto repeatFunction;
 	}
@@ -245,7 +245,7 @@ repeatFunction:
 		this->IndexModule();
 		break;
 	default:
-		cout << "\t\t***Invalid Combination***\n";
+		cout << this->validcom;
 		Sleep(1000);
 		goto repeatFunction;
 		break;
@@ -284,7 +284,7 @@ void Module::NewProgramModule() {
 	cin >> this->program.DATE_END;
 
 	if (!this->command.ValidDate(this->program.DATE_END)) {
-		cout << "\t\tInvalid date format\n";
+		cout << this->validdate;
 		Sleep(1000);
 		goto repeatDateEnd;
 	}
@@ -300,7 +300,7 @@ void Module::NewProgramModule() {
 	cin >> this->program.TOTAL_APPLY;
 
 	if (!this->command.ValidInteger(this->program.TOTAL_APPLY)) {
-		cout << "\t\t***Invalid Integer***\n";
+		cout << this->validint;
 		Sleep(1000);
 		goto repeatTotal;
 	}
@@ -366,7 +366,7 @@ void Module::StaffLoginModule() {
 	cin >> this->staff.EMAIL;
 
 	if (!this->command.ValidEmail(this->staff.EMAIL)) {
-		cout << "\t\t***Invalid Email***\n";
+		cout << this->validemail;
 		Sleep(1000);
 		goto repeatEmail;
 	}
@@ -384,7 +384,7 @@ void Module::StaffLoginModule() {
 		cin >> this->choose;
 
 		if (!this->command.ValidInteger(this->choose)) {
-			cout << "\t\t***Invalid Integer***\n";
+			cout << this->validint;
 			Sleep(1000);
 			goto repeatTry;
 		}
@@ -418,7 +418,7 @@ void Module::StaffIndexModule() {
 	cin >> this->choose;
 
 	if (!this->command.ValidInteger(this->choose)) {
-		cout << "\t\t***Invalid Integer***\n";
+		cout << this->validint;
 		Sleep(1000);
 		goto repeatFunction;
 	}
@@ -446,17 +446,31 @@ void Module::StaffIndexModule() {
 }
 
 void Module::StaffAddModule() {
+
 	HeaderModule("Staff Add Module");
 
 	Staff newStaff;
 
-	if (this->staff.ROLE_ID.ID == 1) {
+	newStaff.ROLE_ID.ID = 22;
+	if (this->staff.ROLE_ID.TITLE == "Doctor") {
+		repeatRole:
 		cout << "\t\tRole\n";
-		cout << "[1=Doctor, 2=Nurse] : ";
-		cin >> newStaff.ROLE_ID.ID;
-	}
-	else {
-		newStaff.ROLE_ID.ID = 2;
+		cout << "\t\t[1=Doctor, 2=Nurse] : ";
+		cin >> this->choose;
+
+		if (!this->command.ValidInteger(this->choose)) {
+			cout << this->validint;
+			Sleep(1000);
+			goto repeatRole;
+		}
+
+		if(this->choose < 1 || this->choose > 2){
+			cout << this->validcom;
+			Sleep(1000);
+			goto repeatRole;
+		}
+
+		this->choose == 1 ? newStaff.ROLE_ID.ID = 21 : newStaff.ROLE_ID.ID = 22;
 	}
 
 	cout << "\t\tFirst name : ";
@@ -467,11 +481,11 @@ void Module::StaffAddModule() {
 
 	reBirth:
 	cout << "\t\tBirthdate\n";
-	cout << "\t\t[DD/MM/YYYY] : \n";
+	cout << "\t\t[DD/MM/YYYY] : ";
 	cin >> newStaff.BIRTHDATE;
 
 	if (!this->command.ValidDate(newStaff.BIRTHDATE)) {
-		cout << "\t\t***Invalid Date Format***\n";
+		cout << this->validdate;
 		Sleep(1000);
 		goto reBirth;
 	}
@@ -481,8 +495,13 @@ void Module::StaffAddModule() {
 
 	newStaff.EMAIL = newStaff.FIRSTNAME + newStaff.LASTNAME[0] + "@utem.edu.my";
 
-	//will add command hire;
+	this->command.NewStaff(newStaff);
+	cout << "\t\tRecord save\n";
+	cout << "\t\tWelcome " << newStaff.FIRSTNAME << " " << newStaff.EMAIL <<endl;
+	cout << "\t\t";
+	system("PAUSE");
 
+	this->StaffIndexModule();
 }
 
 void Module::ItemInventoryModule() {
@@ -507,7 +526,7 @@ void Module::ItemInventoryModule() {
 	cin >> this->choose;
 
 	if (!this->command.ValidInteger(this->choose)) {
-		cout << "\t\t***Invalid Integer***\n";
+		cout << this->validint;
 		Sleep(1000);
 		goto repeatFunction;
 	}
@@ -569,7 +588,7 @@ void Module::ItemAddModule() {
 	cin >> this->item.MAX_LIMIT;
 
 	if (!this->command.ValidInteger(this->item.MAX_LIMIT)) {
-		cout << "\t\t***Invalid Integer***\n";
+		cout << this->validint;
 		Sleep(1000);
 		goto repeatMax;
 	}
@@ -580,13 +599,13 @@ void Module::ItemAddModule() {
 	cin >> this->item.DATE_LIMIT;
 	
 	if (!this->command.ValidInteger(this->item.DATE_LIMIT)) {
-		cout << "\t\t***Invalid Integer***\n";
+		cout << this->validint;
 		Sleep(1000);
 		goto repeatDateL;
 	}
 
 	if (this->item.DATE_LIMIT < 1 || this->item.DATE_LIMIT > 2) {
-		cout << "\t\tInvalid Choose\n";
+		cout << this->validcom;
 		Sleep(1000);
 		goto repeatDateL;
 	}
@@ -617,7 +636,7 @@ void Module::RefillItemModule() {
 
 
 	if (!this->command.ValidInteger(this->choose)) {
-		cout << "\t\t***Invalid Integer***\n";
+		cout << this->validint;
 		Sleep(1000);
 		goto repeatFunction;
 	}
@@ -631,7 +650,7 @@ void Module::RefillItemModule() {
 	cin >> this->content.TOTAL;
 
 	if (!this->command.ValidInteger(this->content.TOTAL)) {
-		cout << "\t\t***Invalid Integer***\n";
+		cout << this->validint;
 		Sleep(1000);
 		goto repeatTotal;
 	}
@@ -649,7 +668,7 @@ void Module::RefillItemModule() {
 		cin >> this->content.DATE_EXP;
 
 		if (!this->command.ValidDate(this->content.DATE_EXP)) {
-			cout << "\t\tInvalid date format\n";
+			cout << this->validdate;
 			Sleep(1000);
 			goto repeatDate;
 		}
@@ -675,7 +694,7 @@ repeatFunction:
 	cin >> this->faid.STATUS;
 
 	if (!this->command.ValidInteger(this->faid.STATUS)) {
-		cout << "\t\t***Invalid Integer***\n";
+		cout << this->validint;
 		Sleep(1000);
 		goto repeatFunction;
 	}
@@ -706,7 +725,7 @@ void Module::ApplicationModule() {
 	cin >> this->choose;
 
 	if (!this->command.ValidInteger(this->choose)) {
-		cout << "\t\t***Invalid Integer***\n";
+		cout << this->validint;
 		Sleep(1000);
 		goto repeatFunction;
 	}

@@ -107,7 +107,7 @@ vector<FirstAid_Program>Command::ViewProgram(Applicant applicant) {
 Staff Command::StaffLogin(Staff staff) {
 
 	Staff output;
-	string pwd = this->Encrypt(staff.PASSWORD);
+	auto pwd = this->Encrypt(staff.PASSWORD);
 
 	OCI_Prepare(this->statement, OTEXT(&this->sqlstaffLogin[0]));
 
@@ -211,4 +211,20 @@ vector<Program> Command::ApplicationList() {
 	}
 
 	return output;
+}
+
+void Command::NewStaff(Staff staff) {
+
+	auto pwd = this->Encrypt(staff.PASSWORD);
+
+	OCI_Prepare(this->statement, OTEXT(&this->sqlnewStaff[0]));
+
+	OCI_BindInt(this->statement, ":ROLE", &staff.ROLE_ID.ID);
+	OCI_BindString(this->statement, ":FIRST", &staff.FIRSTNAME[0], this->charLen);
+	OCI_BindString(this->statement, ":LAST", &staff.LASTNAME[0], this->charLen);
+	OCI_BindDate(this->statement, ":BIRTHDATE", this->StringToDate(staff.BIRTHDATE));
+	OCI_BindString(this->statement, ":EMAIL", &staff.EMAIL[0], this->charLen);
+	OCI_BindString(this->statement, ":PWD", &pwd[0], this->charLen);
+
+	this->Execute();
 }

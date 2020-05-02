@@ -21,6 +21,7 @@ class Command : public Connection
 		string sqlnewItem = "insert into ITEM values (NULL, :NAME, :MAXL, :DATEL)";
 		string sqlrefillContent = "insert into CONTENT values (NULL, :ITEM, :STAFF, :DATE_IN, :DATE_EXP, :TOTAL)";
 		string sqlaidNew = "insert into FIRSTAID values(null, :STATUS)";
+		string sqlnewStaff = "insert into STAFF values (null, :ROLE, :FIRST, :LAST, :BIRTHDATE, :EMAIL, :PWD)";
 public:
 		Command();
 		~Command();
@@ -77,7 +78,15 @@ public:
 		//out put null
 		void AidNew();
 
+		//list of applicantion make bu applicant
+		//input null
+		//output list of program/applicant
 		vector<Program>ApplicationList();
+
+		//Add new staff
+		//input staff information
+		//output null
+		void NewStaff(Staff);
 };		
 
 #endif

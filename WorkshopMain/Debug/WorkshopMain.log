@@ -1,8 +1,4 @@
-﻿  Command.cpp
-  Connection.cpp
-c:\users\ahmad azri\source\repos\workshopmain\workshopmain\connection.cpp(47): warning C4129: '.': unrecognized character escape sequence
-c:\users\ahmad azri\source\repos\workshopmain\workshopmain\connection.cpp(59): warning C4018: '<': signed/unsigned mismatch
-  Module.cpp
+﻿  Module.cpp
   WorkshopMain.cpp
   Generating Code...
   WorkshopMain.vcxproj -> C:\Users\Ahmad Azri\source\repos\WorkshopMain\Debug\WorkshopMain.exe
