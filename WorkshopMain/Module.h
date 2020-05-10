@@ -17,6 +17,7 @@ private:
 	Item			 item;
 	Content			 content;
 	FirstAid		 faid;
+	FirstAid_Content faidContent;
 	string			 validint = "\t\t***Invalid Integer***\n";
 	string			 validcom = "\t\t***Invalid Combination***\n";
 	string			 validdate = "\t\t***Invalid Date Format***\n";
@@ -111,9 +112,17 @@ public:
 	//Simply Add New First Aid To Inventory
 	void AidAddModule();
 
+	//Menu untuk tunjuk pasal application
 	void ApplicationModule();
 
+	//list application
 	void ApplicationListModule();
+
+	//first aid refill
+	void FirstAidRefillModule();
+
+	//
+
 };
 
 #endif // !MODULE_H

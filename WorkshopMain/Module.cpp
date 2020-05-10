@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
+#include <algorithm>
 #include "Command.h"
 #include "Module.h"
 #include "TableStruct.h"
@@ -520,8 +521,9 @@ void Module::ItemInventoryModule() {
 	cout << "\t\t1 = Inventory list(YES)\n";
 	cout << "\t\t2 = Inventory New(YES)\n";
 	cout << "\t\t3 = Refill Inventory(YES)\n";
-	cout << "\t\t4 = First Aid Add (YES)\n";
-	cout << "\t\t5 = Exit\n";
+	cout << "\t\t4 = First Aid Add Box(YES)\n";
+	cout << "\t\t5 = First Aid Refill Box(DEV)\n";
+	cout << "\t\t6 = Exit\n";
 	cout << "\t\tEnter your option [1, 2, 3, 4, 5] : ";
 	cin >> this->choose;
 
@@ -545,6 +547,9 @@ void Module::ItemInventoryModule() {
 		this->AidAddModule();
 		break;
 	case 5:
+		this->FirstAidRefillModule();
+		break;
+	case 6:
 		this->StaffIndexModule();
 		break;
 	default:
@@ -720,7 +725,8 @@ void Module::ApplicationModule() {
 	repeatFunction:
 	HeaderModule("Application Module");
 
-	cout << "\t\t1 =List of application\n";
+	cout << "\t\t1 = List of application\n";
+	cout << "\t\t2 = Exit\n";
 	cout << "\t\tEnter your option [1, 2, 3, 4, 5] : ";
 	cin >> this->choose;
 
@@ -733,7 +739,11 @@ void Module::ApplicationModule() {
 	switch (this->choose){
 	case 1:
 		this->ApplicationListModule();
+	case 2:
+		this->StaffIndexModule();
 	default:
+		cout << this->validcom;
+		Sleep(1000);
 		goto repeatFunction;
 		break;
 	}
@@ -768,3 +778,54 @@ void Module::ApplicationListModule() {
 	this->ApplicationModule();
 
 }
+
+void Module::FirstAidRefillModule() {
+	HeaderModule("Firstaid Refill Module");
+
+	auto itemList = this->command.ItemListFilterZero();
+
+	auto firstEmpty = this->command.FirstaidSingleEmpty();
+
+	cout << "\t\tList of available aid\n";
+	cout << "\t\tIf the item your need is not here (It maybe out of stock)\n";
+	
+	cout << endl;
+	this->PrintElement("Name");
+	this->PrintElement("Stock");
+	this->PrintLine(3);
+
+	for (auto x : itemList) {
+		cout << endl;
+		this->PrintElement(x.NAME);
+		this->PrintElement(x.MAX_LIMIT);
+		this->PrintLine(3);
+	}
+
+	for (auto x : itemList) {
+		reItem:
+		cout << "Enter value for " << x.NAME << " : ";
+		cin >> this->faidContent.TOTAL;
+
+		if (!this->command.ValidInteger(this->faidContent.TOTAL)) {
+			cout << this->validint;
+			Sleep(1000);
+			goto reItem;
+		}
+		if (this->faidContent.TOTAL > x.MAX_LIMIT) {
+			cout << this->validcom;
+			cout << "\t\tMax is " << x.MAX_LIMIT << endl;
+			Sleep(1000);
+			goto reItem;
+		}
+
+		this->faidContent.CONTENT_ID.ID = x.ID;
+		this->faidContent.FIRSTAID_ID.ID = firstEmpty;
+		this->command.AssigntFirstaidContent(this->faidContent);
+	}
+
+	cout << "\t\t";
+	system("PAUSE");
+	this->ItemInventoryModule();
+
+}
+

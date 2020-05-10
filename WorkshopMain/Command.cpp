@@ -228,3 +228,65 @@ void Command::NewStaff(Staff staff) {
 
 	this->Execute();
 }
+
+int Command::AvailableFirstaid() {
+	int output;
+
+	OCI_Prepare(this->statement, OTEXT(&this->sqlavailablefirstaid[0]));
+
+	this->Execute();
+	this->result = OCI_GetResultset(this->statement);
+
+	while (OCI_FetchNext(this->result))
+		output = OCI_GetInt(this->result, 1);
+
+	return output;
+
+}
+
+vector<Item> Command::ItemListFilterZero() {
+
+	Item value;
+	vector<Item> output;
+
+	OCI_Prepare(this->statement, OTEXT(&this->sqlitemListFilterZero[0]));
+
+	this->Execute();
+	this->result = OCI_GetResultset(this->statement);
+
+	while (OCI_FetchNext(this->result)) {
+		value = {
+			OCI_GetInt(this->result, 1),
+			OCI_GetString(this->result, 2),
+			OCI_GetInt(this->result, 4),
+			OCI_GetInt(this->result, 3)
+		};
+		output.push_back(value);
+	}
+
+	return output;
+
+}
+
+int Command::FirstaidSingleEmpty() {
+	int output;
+
+	OCI_Prepare(this->statement, OTEXT(&this->sqlfirstaidSingleEmpty[0]));
+	
+	this->Execute();
+	this->result = OCI_GetResultset(this->statement);
+
+	(OCI_FetchNext(this->result)) ? output = OCI_GetInt(this->result, 1) : NULL;
+
+	return output;
+}
+
+void Command::AssigntFirstaidContent(FirstAid_Content faidContent) {
+	OCI_Prepare(this->statement, OTEXT(&this->sqlassigntFirstaidContent[0]));
+
+	OCI_BindInt(this->statement, ":FIRST", &faidContent.FIRSTAID_ID.ID);
+	OCI_BindInt(this->statement, ":CONTENT", &faidContent.CONTENT_ID.ID);
+	OCI_BindInt(this->statement, ":TOTAL", &faidContent.TOTAL);
+
+	this->Execute();
+}
