@@ -2,6 +2,7 @@
 #include <string>
 #include <iomanip>
 #include <algorithm>
+#include <unordered_set>
 #include "Command.h"
 #include "Module.h"
 #include "TableStruct.h"
@@ -782,9 +783,12 @@ void Module::ApplicationListModule() {
 void Module::FirstAidRefillModule() {
 	HeaderModule("Firstaid Refill Module");
 
+	unordered_set<string> duplicate;
+
 	auto itemList = this->command.ItemListFilterZero();
 
 	auto firstEmpty = this->command.FirstaidSingleEmpty();
+
 
 	cout << "\t\tList of available aid\n";
 	cout << "\t\tIf the item your need is not here (It maybe out of stock)\n";
@@ -795,33 +799,44 @@ void Module::FirstAidRefillModule() {
 	this->PrintLine(3);
 
 	for (auto x : itemList) {
-		cout << endl;
-		this->PrintElement(x.NAME);
-		this->PrintElement(x.MAX_LIMIT);
-		this->PrintLine(3);
+		if (duplicate.insert(x.NAME).second) {
+			cout << endl;
+			this->PrintElement(x.NAME);
+			this->PrintElement(x.MAX_LIMIT);
+			this->PrintLine(3);
+		}
 	}
-
+	duplicate.clear();
 	for (auto x : itemList) {
+		if (duplicate.insert(x.NAME).second) {
 		reItem:
-		cout << "Enter value for " << x.NAME << " : ";
-		cin >> this->faidContent.TOTAL;
+			cout << "Enter value for " << x.NAME << " : ";
+			cin >> this->faidContent.TOTAL;
 
-		if (!this->command.ValidInteger(this->faidContent.TOTAL)) {
-			cout << this->validint;
-			Sleep(1000);
-			goto reItem;
-		}
-		if (this->faidContent.TOTAL > x.MAX_LIMIT) {
-			cout << this->validcom;
-			cout << "\t\tMax is " << x.MAX_LIMIT << endl;
-			Sleep(1000);
-			goto reItem;
-		}
+			if (!this->command.ValidInteger(this->faidContent.TOTAL)) {
+				cout << this->validint;
+				Sleep(1000);
+				goto reItem;
+			}
+			if (this->faidContent.TOTAL > x.MAX_LIMIT) {
+				cout << this->validcom;
+				cout << "\t\tMax is " << x.MAX_LIMIT << endl;
+				Sleep(1000);
+				goto reItem;
+			}
 
-		this->faidContent.CONTENT_ID.ID = x.ID;
-		this->faidContent.FIRSTAID_ID.ID = firstEmpty;
-		this->command.AssigntFirstaidContent(this->faidContent);
+			this->faidContent.CONTENT_ID.ID = x.ID;
+			this->faidContent.FIRSTAID_ID.ID = firstEmpty;
+
+			//cheack fill
+			if (this->command.CheckFirstaidEmpty(this->faidContent) == 0)
+				this->command.AssigntFirstaidContent(this->faidContent);
+			else
+				this->command.UpdateFirstaidEmpty(this->faidContent);
+
+		}
 	}
+	cout << "\t\tFirstaid is refill";
 
 	cout << "\t\t";
 	system("PAUSE");

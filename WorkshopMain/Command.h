@@ -18,6 +18,8 @@ class Command : public Connection
 		string sqlavailablefirstaid = "select count(STATUS) from FIRSTAID where STATUS = 2";
 		string sqlitemListFilterZero = "select CONTENT.ID, ITEM.NAME, ITEM.DATE_LIMIT, SUM(CONTENT.TOTAL) TOTAL from ITEM left join CONTENT on ITEM.ID = CONTENT.ITEM_ID where TOTAL != 0 group by CONTENT.ID, ITEM.NAME, ITEM.DATE_LIMIT order by CONTENT.ID";
 		string sqlfirstaidSingleEmpty = "select * from FIRSTAID where STATUS = 2";
+		string sqlcheckFirstaidEmpty = "select count (*) from FIRSTAID_CONTENT where FIRSTAID_ID = :FIRSTAID and CONTENT_ID = :CONTENT";
+
 
 		string sqlnewApplicant = "insert into APPLICANT values (:ID, :FIRST, :LAST, :CONTACT, :TYPE)";
 		string sqlnewProgram = "insert into PROGRAM (APPLICANT_ID, NAME, DATE_APPLY , DATE_START, DATE_END, TOTAL_APPLY) values (:APPLICANT, :NAME, :DATEA, :DATES, :DATEE,  :TOTAL)";
@@ -26,6 +28,8 @@ class Command : public Connection
 		string sqlaidNew = "insert into FIRSTAID values(null, :STATUS)";
 		string sqlnewStaff = "insert into STAFF values (null, :ROLE, :FIRST, :LAST, :BIRTHDATE, :EMAIL, :PWD)";
 		string sqlassigntFirstaidContent = "insert into FIRSTAID_CONTENT values (NULL, :FIRST, :CONTENT, :TOTAL)";
+
+		string sqlupdateFirstaidEmpty = "update FIRSTAID_CONTENT set TOTAL = :TOTAL where FIRSTAID_ID = :FIRSTAID and CONTENT_ID = :CONTENT";
 
 
 public:
@@ -113,6 +117,9 @@ public:
 		//input first aid content
 		//output null
 		void AssigntFirstaidContent(FirstAid_Content);
+
+		int CheckFirstaidEmpty(FirstAid_Content);
+		void UpdateFirstaidEmpty(FirstAid_Content);
 
 };		
 
