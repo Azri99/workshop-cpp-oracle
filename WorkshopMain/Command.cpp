@@ -281,6 +281,14 @@ int Command::FirstaidSingleEmpty() {
 	return output;
 }
 
+void Command::UpdateItemTotal(int id, int total) {
+	OCI_Prepare(this->statement, OTEXT(&this->sqlupdateItemTotal[0]));
+	OCI_BindInt(this->statement, ":TOTAL", &total);
+	OCI_BindInt(this->statement, ":ID", &id);
+	this->Execute();
+}
+
+
 void Command::AssigntFirstaidContent(FirstAid_Content faidContent) {
 	OCI_Prepare(this->statement, OTEXT(&this->sqlassigntFirstaidContent[0]));
 
@@ -289,9 +297,8 @@ void Command::AssigntFirstaidContent(FirstAid_Content faidContent) {
 	OCI_BindInt(this->statement, ":TOTAL", &faidContent.TOTAL);
 
 	this->Execute();
+
 }
-
-
 
 int Command::CheckFirstaidEmpty(FirstAid_Content faidContent) {
 	int output;
@@ -304,7 +311,9 @@ int Command::CheckFirstaidEmpty(FirstAid_Content faidContent) {
 	this->Execute();
 	this->result = OCI_GetResultset(this->statement);
 
+
 	if (OCI_FetchNext(this->result)) output = OCI_GetInt(this->result, 1);
+
 
 	return output;
 }
@@ -318,6 +327,15 @@ void Command::UpdateFirstaidEmpty(FirstAid_Content faidContent) {
 	OCI_BindInt(this->statement, ":FIRSTAID", &faidContent.FIRSTAID_ID.ID);
 	OCI_BindInt(this->statement, ":CONTENT", &faidContent.CONTENT_ID.ID);
 	OCI_BindInt(this->statement, ":TOTAL", &faidContent.TOTAL);
+
+	this->Execute();
+}
+
+void Command::UpdateFirstaidStatus(int id, int status) {
+	OCI_Prepare(this->statement, OTEXT(&this->sqlupdateFirstaidStatus[0]));
+
+	OCI_BindInt(this->statement, ":ID", &id);
+	OCI_BindInt(this->statement, ":STATUS", &status);
 
 	this->Execute();
 }

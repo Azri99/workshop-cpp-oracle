@@ -30,8 +30,8 @@ class Command : public Connection
 		string sqlassigntFirstaidContent = "insert into FIRSTAID_CONTENT values (NULL, :FIRST, :CONTENT, :TOTAL)";
 
 		string sqlupdateFirstaidEmpty = "update FIRSTAID_CONTENT set TOTAL = :TOTAL where FIRSTAID_ID = :FIRSTAID and CONTENT_ID = :CONTENT";
-
-
+		string sqlupdateItemTotal = "update CONTENT set TOTAL = TOTAL - :TOTAL where ID = :ID";
+		string sqlupdateFirstaidStatus = "update FIRSTAID set STATUS = :STATUS where ID = :ID";
 public:
 		Command();
 		~Command();
@@ -121,6 +121,8 @@ public:
 		int CheckFirstaidEmpty(FirstAid_Content);
 		void UpdateFirstaidEmpty(FirstAid_Content);
 
+		void UpdateItemTotal(int, int);
+		void UpdateFirstaidStatus(int, int);
 };		
 
 #endif

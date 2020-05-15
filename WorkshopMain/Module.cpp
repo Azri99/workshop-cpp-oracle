@@ -772,11 +772,34 @@ void Module::ApplicationListModule() {
 		this->PrintElement(x.TOTAL_APPLY);
 		this->PrintLine(5);
 	}
+	repeatAsk:
+	cout << "\n\t\tProve applicantion? [1 = Yes, 2= No] :";
+	cin >> this->choose;
 
-	cout << "\t\t";
-	system("PAUSE");
+	if (!this->command.ValidInteger(this->choose)) {
+		cout << this->validint;
+		Sleep(1000);
+		goto repeatAsk;
+	}
 
-	this->ApplicationModule();
+	switch (this->choose){
+	case 1:
+		cout << "\t\tEnter program name : ";
+		cin >> this->program.NAME;
+		//approve
+		break;
+	case 2:
+		cout << "\t\t";
+		system("PAUSE");
+		this->ApplicationModule();
+		break;
+	default:
+		cout << this->validcom;
+		Sleep(1000);
+		goto repeatAsk;
+	}
+	cin >> this->program.NAME;
+
 
 }
 
@@ -828,14 +851,16 @@ void Module::FirstAidRefillModule() {
 			this->faidContent.CONTENT_ID.ID = x.ID;
 			this->faidContent.FIRSTAID_ID.ID = firstEmpty;
 
-			//cheack fill
 			if (this->command.CheckFirstaidEmpty(this->faidContent) == 0)
 				this->command.AssigntFirstaidContent(this->faidContent);
 			else
 				this->command.UpdateFirstaidEmpty(this->faidContent);
+			
+			this->command.UpdateItemTotal(this->faidContent.CONTENT_ID.ID, this->faidContent.TOTAL);
 
 		}
 	}
+
 	cout << "\t\tFirstaid is refill";
 
 	cout << "\t\t";

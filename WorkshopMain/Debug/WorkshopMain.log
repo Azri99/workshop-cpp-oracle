@@ -1,4 +1,5 @@
-﻿  Module.cpp
+﻿  Command.cpp
+  Module.cpp
   WorkshopMain.cpp
   Generating Code...
   WorkshopMain.vcxproj -> C:\Users\Ahmad Azri\source\repos\WorkshopMain\Debug\WorkshopMain.exe
