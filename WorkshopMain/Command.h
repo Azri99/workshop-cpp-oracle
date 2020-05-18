@@ -14,7 +14,7 @@ class Command : public Connection
 		string sqlviewProgram = "select PROGRAM.NAME, PROGRAM.DATE_START,  PROGRAM.DATE_END,   PROGRAM.DATE_APPLY, PROGRAM.TOTAL_APPLY, FIRSTAID_PROGRAM.DATE_APPROVE  from PROGRAM left join FIRSTAID_PROGRAM on PROGRAM.ID = FIRSTAID_PROGRAM.PROGRAM_ID where PROGRAM.APPLICANT_ID = :APPLICANT and PROGRAM.DATE_START >= :DATE_SYS order by PROGRAM.DATE_START";
 		string sqlstaffLogin = "select STAFF.ID, STAFF.ROLE_ID, STAFF.FIRSTNAME, STAFF.LASTNAME, STAFF.BIRTHDATE, STAFF.EMAIL, STAFF.PASSWORD, ROLE.TITLE from STAFF join ROLE on STAFF.ROLE_ID = ROLE.ID where STAFF.EMAIL = :EMAIL and STAFF.PASSWORD = :PWD order by STAFF.ID";
 		string sqlitemList = "select ITEM.ID, ITEM.NAME, ITEM.DATE_LIMIT, SUM(CONTENT.TOTAL) from ITEM left join CONTENT on ITEM.ID = CONTENT.ITEM_ID group by ITEM.ID, ITEM.NAME, ITEM.DATE_LIMIT order by ITEM.ID";
-		string sqlapplicationList = "select PROGRAM.NAME, PROGRAM.DATE_START,  PROGRAM.DATE_END,   PROGRAM.DATE_APPLY, PROGRAM.TOTAL_APPLY from PROGRAM where PROGRAM.DATE_START >= :DATE_SYS order by PROGRAM.DATE_START";
+		string sqlapplicationList = "select PROGRAM.ID,  PROGRAM.NAME, PROGRAM.DATE_START,  PROGRAM.DATE_END,   PROGRAM.DATE_APPLY, PROGRAM.TOTAL_APPLY from PROGRAM where PROGRAM.DATE_START >= :DATE_SYS order by PROGRAM.DATE_START";
 		string sqlavailablefirstaid = "select count(STATUS) from FIRSTAID where STATUS = 2";
 		string sqlitemListFilterZero = "select CONTENT.ID, ITEM.NAME, ITEM.DATE_LIMIT, SUM(CONTENT.TOTAL) TOTAL from ITEM left join CONTENT on ITEM.ID = CONTENT.ITEM_ID where TOTAL != 0 group by CONTENT.ID, ITEM.NAME, ITEM.DATE_LIMIT order by CONTENT.ID";
 		string sqlfirstaidSingleEmpty = "select * from FIRSTAID where STATUS = 2";
@@ -28,10 +28,12 @@ class Command : public Connection
 		string sqlaidNew = "insert into FIRSTAID values(null, :STATUS)";
 		string sqlnewStaff = "insert into STAFF values (null, :ROLE, :FIRST, :LAST, :BIRTHDATE, :EMAIL, :PWD)";
 		string sqlassigntFirstaidContent = "insert into FIRSTAID_CONTENT values (NULL, :FIRST, :CONTENT, :TOTAL)";
+		string sqlprogramApprove = "insert into FIRSTAID_PROGRAM (PROGRAM_ID, FIRSTAID_ID, STAFF_ID, DATE_APPROVE) values (:PROGRAMID, :FIRSTID, :STAFFID, :DATE_APPROVE)";
 
 		string sqlupdateFirstaidEmpty = "update FIRSTAID_CONTENT set TOTAL = :TOTAL where FIRSTAID_ID = :FIRSTAID and CONTENT_ID = :CONTENT";
 		string sqlupdateItemTotal = "update CONTENT set TOTAL = TOTAL - :TOTAL where ID = :ID";
 		string sqlupdateFirstaidStatus = "update FIRSTAID set STATUS = :STATUS where ID = :ID";
+		
 public:
 		Command();
 		~Command();
@@ -119,10 +121,14 @@ public:
 		void AssigntFirstaidContent(FirstAid_Content);
 
 		int CheckFirstaidEmpty(FirstAid_Content);
+
 		void UpdateFirstaidEmpty(FirstAid_Content);
 
-		void UpdateItemTotal(int, int);
-		void UpdateFirstaidStatus(int, int);
+		void UpdateItemTotal(FirstAid_Content);
+		
+		void UpdateFirstaidStatus(FirstAid_Content);
+
+		void ProgramApprove(FirstAid_Program);
 };		
 
 #endif

@@ -201,11 +201,12 @@ vector<Program> Command::ApplicationList() {
 	this->result = OCI_GetResultset(this->statement);
 
 	while (OCI_FetchNext(this->result)) {
-		value.NAME = OCI_GetString(this->result, 1);
-		value.DATE_START = this->DateToString(OCI_GetDate(this->result, 2));
-		value.DATE_END = this->DateToString(OCI_GetDate(this->result, 3));
-		value.DATE_APPLY = this->DateToString(OCI_GetDate(this->result, 4));
-		value.TOTAL_APPLY = OCI_GetInt(this->result, 5);
+		value.ID = OCI_GetInt(this->result, 1);
+		value.NAME = OCI_GetString(this->result, 2);
+		value.DATE_START = this->DateToString(OCI_GetDate(this->result, 3));
+		value.DATE_END = this->DateToString(OCI_GetDate(this->result, 4));
+		value.DATE_APPLY = this->DateToString(OCI_GetDate(this->result, 5));
+		value.TOTAL_APPLY = OCI_GetInt(this->result, 6);
 		
 		output.push_back(value);
 	}
@@ -281,10 +282,10 @@ int Command::FirstaidSingleEmpty() {
 	return output;
 }
 
-void Command::UpdateItemTotal(int id, int total) {
+void Command::UpdateItemTotal(FirstAid_Content faidContent) {
 	OCI_Prepare(this->statement, OTEXT(&this->sqlupdateItemTotal[0]));
-	OCI_BindInt(this->statement, ":TOTAL", &total);
-	OCI_BindInt(this->statement, ":ID", &id);
+	OCI_BindInt(this->statement, ":TOTAL", &faidContent.TOTAL);
+	OCI_BindInt(this->statement, ":ID", &faidContent.CONTENT_ID.ID);
 	this->Execute();
 }
 
@@ -331,11 +332,22 @@ void Command::UpdateFirstaidEmpty(FirstAid_Content faidContent) {
 	this->Execute();
 }
 
-void Command::UpdateFirstaidStatus(int id, int status) {
+void Command::UpdateFirstaidStatus(FirstAid_Content faidContent) {
 	OCI_Prepare(this->statement, OTEXT(&this->sqlupdateFirstaidStatus[0]));
 
-	OCI_BindInt(this->statement, ":ID", &id);
-	OCI_BindInt(this->statement, ":STATUS", &status);
+	OCI_BindInt(this->statement, ":ID", &faidContent.FIRSTAID_ID.ID);
+	OCI_BindInt(this->statement, ":STATUS", &faidContent.FIRSTAID_ID.STATUS);
 
+	this->Execute();
+}
+
+void Command::ProgramApprove(FirstAid_Program faidProgram) {
+	OCI_Prepare(this->statement, OTEXT(&this->sqlprogramApprove[0]));
+
+	OCI_BindInt(this->statement, ":PROGRAMID", &faidProgram.PROGRAM_ID.ID);
+	OCI_BindInt(this->statement, ":FIRSTID", &faidProgram.FIRSTAID_ID.ID);
+	OCI_BindInt(this->statement, ":STAFFID", &faidProgram.STAFF_ID.ID);
+	OCI_BindDate(this->statement, ":DATE_APPROVE", this->CurrentDate());
+	
 	this->Execute();
 }

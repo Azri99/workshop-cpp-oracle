@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <unordered_set>
+#include <unordered_map>
 #include "Command.h"
 #include "Module.h"
 #include "TableStruct.h"
@@ -753,8 +754,10 @@ void Module::ApplicationModule() {
 void Module::ApplicationListModule() {
 	HeaderModule("Application List Module");
 
-	auto result = this->command.ApplicationList();
+	unordered_map<string, int>programMapKeyName;
+	unordered_map<int, int>programMapKeyId;
 
+	auto result = this->command.ApplicationList();
 
 	this->PrintElement("Name");
 	this->PrintElement("Date Apply");
@@ -764,6 +767,9 @@ void Module::ApplicationListModule() {
 	this->PrintLine(5);
 
 	for (auto x : result) {
+
+		programMapKeyName.insert(make_pair(x.NAME, x.ID));
+		programMapKeyId.insert(make_pair(x.ID, x.TOTAL_APPLY));
 		cout << endl;
 		this->PrintElement(x.NAME);
 		this->PrintElement(x.DATE_APPLY);
@@ -784,9 +790,25 @@ void Module::ApplicationListModule() {
 
 	switch (this->choose){
 	case 1:
+		reProgram:
 		cout << "\t\tEnter program name : ";
 		cin >> this->program.NAME;
-		//approve
+
+		if (programMapKeyName.find(this->program.NAME) == programMapKeyName.end())
+			goto reProgram;
+
+		
+
+		for (int i = 0;
+			i < programMapKeyId.find(programMapKeyName.find(this->program.NAME)->second)->second;
+			i++) {
+			this->program.ID = programMapKeyName.find(this->program.NAME)->second;
+			this->FirstAidRefillModule();
+		}
+
+
+
+		this->ApplicationModule();
 		break;
 	case 2:
 		cout << "\t\t";
@@ -798,8 +820,6 @@ void Module::ApplicationListModule() {
 		Sleep(1000);
 		goto repeatAsk;
 	}
-	cin >> this->program.NAME;
-
 
 }
 
@@ -856,16 +876,24 @@ void Module::FirstAidRefillModule() {
 			else
 				this->command.UpdateFirstaidEmpty(this->faidContent);
 			
-			this->command.UpdateItemTotal(this->faidContent.CONTENT_ID.ID, this->faidContent.TOTAL);
-
+			this->command.UpdateItemTotal(this->faidContent);
 		}
 	}
 
-	cout << "\t\tFirstaid is refill";
+
+
+	this->faidContent.FIRSTAID_ID.STATUS = 1;
+	this->command.UpdateFirstaidStatus(this->faidContent);
+
+	this->faidProgram.FIRSTAID_ID.ID = this->faidContent.FIRSTAID_ID.ID;
+	this->faidProgram.PROGRAM_ID.ID = this->program.ID;
+	this->faidProgram.STAFF_ID.ID = this->staff.ID;
+
+	this->command.ProgramApprove(this->faidProgram);
+
+	cout << "\t\tFirstaid is refill\n";
 
 	cout << "\t\t";
 	system("PAUSE");
-	this->ItemInventoryModule();
-
 }
 

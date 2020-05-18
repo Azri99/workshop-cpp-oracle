@@ -18,6 +18,7 @@ private:
 	Content			 content;
 	FirstAid		 faid;
 	FirstAid_Content faidContent;
+	FirstAid_Program faidProgram;
 	string			 validint = "\t\t***Invalid Integer***\n";
 	string			 validcom = "\t\t***Invalid Combination***\n";
 	string			 validdate = "\t\t***Invalid Date Format***\n";
