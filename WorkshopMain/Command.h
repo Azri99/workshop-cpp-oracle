@@ -11,15 +11,15 @@ class Command : public Connection
 {
 	private:
 		string sqlspecificApplicant = "select * from APPLICANT where ID = :ID";
-		string sqlviewProgram = "select PROGRAM.NAME, PROGRAM.DATE_START,  PROGRAM.DATE_END,   PROGRAM.DATE_APPLY, PROGRAM.TOTAL_APPLY, FIRSTAID_PROGRAM.DATE_APPROVE  from PROGRAM left join FIRSTAID_PROGRAM on PROGRAM.ID = FIRSTAID_PROGRAM.PROGRAM_ID where PROGRAM.APPLICANT_ID = :APPLICANT and PROGRAM.DATE_START >= :DATE_SYS order by PROGRAM.DATE_START";
+		string sqlviewProgram = "select distinct PROGRAM.NAME, PROGRAM.DATE_START,  PROGRAM.DATE_END,   PROGRAM.DATE_APPLY, PROGRAM.TOTAL_APPLY, FIRSTAID_PROGRAM.DATE_APPROVE  from PROGRAM left join FIRSTAID_PROGRAM on PROGRAM.ID = FIRSTAID_PROGRAM.PROGRAM_ID where PROGRAM.APPLICANT_ID = :APPLICANT and PROGRAM.DATE_START >= :DATE_SYS order by PROGRAM.DATE_START";
 		string sqlstaffLogin = "select STAFF.ID, STAFF.ROLE_ID, STAFF.FIRSTNAME, STAFF.LASTNAME, STAFF.BIRTHDATE, STAFF.EMAIL, STAFF.PASSWORD, ROLE.TITLE from STAFF join ROLE on STAFF.ROLE_ID = ROLE.ID where STAFF.EMAIL = :EMAIL and STAFF.PASSWORD = :PWD order by STAFF.ID";
 		string sqlitemList = "select ITEM.ID, ITEM.NAME, ITEM.DATE_LIMIT, SUM(CONTENT.TOTAL) from ITEM left join CONTENT on ITEM.ID = CONTENT.ITEM_ID group by ITEM.ID, ITEM.NAME, ITEM.DATE_LIMIT order by ITEM.ID";
-		string sqlapplicationList = "select PROGRAM.ID,  PROGRAM.NAME, PROGRAM.DATE_START,  PROGRAM.DATE_END,   PROGRAM.DATE_APPLY, PROGRAM.TOTAL_APPLY from PROGRAM where PROGRAM.DATE_START >= :DATE_SYS order by PROGRAM.DATE_START";
+		string sqlapplicationList = "select PROGRAM.ID,  PROGRAM.NAME, PROGRAM.DATE_START,  PROGRAM.DATE_END,   PROGRAM.DATE_APPLY, PROGRAM.TOTAL_APPLY from PROGRAM where PROGRAM.DATE_START >= :DATE_SYS and PROGRAM.ID not in (select PROGRAM_ID from FIRSTAID_PROGRAM) order by PROGRAM.DATE_START";
 		string sqlavailablefirstaid = "select count(STATUS) from FIRSTAID where STATUS = 2";
 		string sqlitemListFilterZero = "select CONTENT.ID, ITEM.NAME, ITEM.DATE_LIMIT, SUM(CONTENT.TOTAL) TOTAL from ITEM left join CONTENT on ITEM.ID = CONTENT.ITEM_ID where TOTAL != 0 group by CONTENT.ID, ITEM.NAME, ITEM.DATE_LIMIT order by CONTENT.ID";
 		string sqlfirstaidSingleEmpty = "select * from FIRSTAID where STATUS = 2";
 		string sqlcheckFirstaidEmpty = "select count (*) from FIRSTAID_CONTENT where FIRSTAID_ID = :FIRSTAID and CONTENT_ID = :CONTENT";
-
+		string sqlBorrowFirstaid = "select FIRSTAID_PROGRAM.ID, FIRSTAID_PROGRAM.FIRSTAID_ID, FIRSTAID_PROGRAM.PROGRAM_ID, PROGRAM.NAME from PROGRAM join FIRSTAID_PROGRAM on FIRSTAID_PROGRAM.PROGRAM_ID = PROGRAM.ID where PROGRAM.APPLICANT_ID = :ID";
 
 		string sqlnewApplicant = "insert into APPLICANT values (:ID, :FIRST, :LAST, :CONTACT, :TYPE)";
 		string sqlnewProgram = "insert into PROGRAM (APPLICANT_ID, NAME, DATE_APPLY , DATE_START, DATE_END, TOTAL_APPLY) values (:APPLICANT, :NAME, :DATEA, :DATES, :DATEE,  :TOTAL)";
@@ -33,6 +33,7 @@ class Command : public Connection
 		string sqlupdateFirstaidEmpty = "update FIRSTAID_CONTENT set TOTAL = :TOTAL where FIRSTAID_ID = :FIRSTAID and CONTENT_ID = :CONTENT";
 		string sqlupdateItemTotal = "update CONTENT set TOTAL = TOTAL - :TOTAL where ID = :ID";
 		string sqlupdateFirstaidStatus = "update FIRSTAID set STATUS = :STATUS where ID = :ID";
+		string sqlupdateReturnFirstAid = "update FIRSTAID set STATUS = 2 where ID in(select FIRSTAID_ID from FIRSTAID_PROGRAM where PROGRAM_ID in(select ID from PROGRAM where NAME = :NAME))";
 		
 public:
 		Command();
@@ -129,7 +130,12 @@ public:
 		void UpdateFirstaidStatus(FirstAid_Content);
 
 		void ProgramApprove(FirstAid_Program);
+
+		vector<FirstAid_Program> BorrowFirstaid(Applicant);
+
+		void UpdateReturnFirstAid(Program);
 };		
+
 
 #endif
 

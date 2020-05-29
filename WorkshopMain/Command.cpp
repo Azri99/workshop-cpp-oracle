@@ -95,6 +95,7 @@ vector<FirstAid_Program>Command::ViewProgram(Applicant applicant) {
 		value.PROGRAM_ID.DATE_APPLY = this->DateToString(OCI_GetDate(this->result, 4));
 		value.PROGRAM_ID.TOTAL_APPLY = OCI_GetInt(this->result, 5);
 
+		value.DATE_APPROVE = "";
 		if (OCI_GetDate(this->result, 6) != nullptr)
 			value.DATE_APPROVE = this->DateToString(OCI_GetDate(this->result, 6));
 
@@ -349,5 +350,36 @@ void Command::ProgramApprove(FirstAid_Program faidProgram) {
 	OCI_BindInt(this->statement, ":STAFFID", &faidProgram.STAFF_ID.ID);
 	OCI_BindDate(this->statement, ":DATE_APPROVE", this->CurrentDate());
 	
+	this->Execute();
+}
+
+
+vector<FirstAid_Program> Command::BorrowFirstaid(Applicant applicant) {
+	vector<FirstAid_Program> output;
+	FirstAid_Program temp;
+	OCI_Prepare(this->statement, OTEXT(&this->sqlBorrowFirstaid[0]));
+
+	OCI_BindString(this->statement, ":ID", &applicant.ID[0], this->charLen);
+
+	this->Execute();
+	this->result = OCI_GetResultset(this->statement);
+
+	while (OCI_FetchNext(this->result)){
+		temp.ID = OCI_GetInt(this->result, 1);
+		temp.FIRSTAID_ID.ID = OCI_GetInt(this->result, 2);
+		temp.PROGRAM_ID.ID = OCI_GetInt(this->result, 3);
+		temp.PROGRAM_ID.NAME = OCI_GetString(this->result, 4);
+
+		output.push_back(temp);
+	}
+
+	return output;
+}
+
+void Command::UpdateReturnFirstAid(Program program) {
+	OCI_Prepare(this->statement, OTEXT(&this->sqlupdateReturnFirstAid[0]));
+
+	OCI_BindString(this->statement, ":NAME", &program.NAME[0], this->charLen);
+
 	this->Execute();
 }

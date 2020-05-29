@@ -240,6 +240,7 @@ repeatFunction:
 		this->NewProgramModule();
 		break;
 	case 2:
+		this->ReturnFirstaidModule();
 		break;
 	case 3:
 		this->ViewProgramStatusModule();
@@ -524,8 +525,7 @@ void Module::ItemInventoryModule() {
 	cout << "\t\t2 = Inventory New(YES)\n";
 	cout << "\t\t3 = Refill Inventory(YES)\n";
 	cout << "\t\t4 = First Aid Add Box(YES)\n";
-	cout << "\t\t5 = First Aid Refill Box(DEV)\n";
-	cout << "\t\t6 = Exit\n";
+	cout << "\t\t5 = Exit\n";
 	cout << "\t\tEnter your option [1, 2, 3, 4, 5] : ";
 	cin >> this->choose;
 
@@ -549,9 +549,6 @@ void Module::ItemInventoryModule() {
 		this->AidAddModule();
 		break;
 	case 5:
-		this->FirstAidRefillModule();
-		break;
-	case 6:
 		this->StaffIndexModule();
 		break;
 	default:
@@ -759,6 +756,12 @@ void Module::ApplicationListModule() {
 
 	auto result = this->command.ApplicationList();
 
+	if (result.size() == 0) {
+		cout << "\t\tList is empty\n\n";
+		Sleep(1000);
+		this->ApplicationModule();
+	}
+
 	this->PrintElement("Name");
 	this->PrintElement("Date Apply");
 	this->PrintElement("Date Start");
@@ -778,6 +781,9 @@ void Module::ApplicationListModule() {
 		this->PrintElement(x.TOTAL_APPLY);
 		this->PrintLine(5);
 	}
+
+
+
 	repeatAsk:
 	cout << "\n\t\tProve applicantion? [1 = Yes, 2= No] :";
 	cin >> this->choose;
@@ -832,6 +838,13 @@ void Module::FirstAidRefillModule() {
 
 	auto firstEmpty = this->command.FirstaidSingleEmpty();
 
+	if (itemList.size() == 0 || firstEmpty == 0) {
+		cout << "\t\tNo available item or first aid\n";
+		cout << "\t\tPlease check the invetory\n\t\t";
+		system("PAUSE");
+		this->ApplicationListModule();
+
+	}
 
 	cout << "\t\tList of available aid\n";
 	cout << "\t\tIf the item your need is not here (It maybe out of stock)\n";
@@ -891,9 +904,59 @@ void Module::FirstAidRefillModule() {
 
 	this->command.ProgramApprove(this->faidProgram);
 
-	cout << "\t\tFirstaid is refill\n";
+	cout << "\t\tFirstaid is refill\n\t\t";
 
-	cout << "\t\t";
 	system("PAUSE");
+
 }
 
+void Module::ReturnFirstaidModule() {
+	HeaderModule("Return Firstaid Module");
+
+	unordered_set<string> duplicate;
+	//number of first aid you own
+	//in what program
+
+	//list pragram and number of first aid
+	auto result = this->command.BorrowFirstaid(this->applicant);
+
+	cout << endl;
+	this->PrintElement("Program Name");
+	this->PrintElement("Firstaids");
+	this->PrintLine(2);
+
+
+	for (auto x : result) {
+
+		if (duplicate.insert(x.PROGRAM_ID.NAME).second) {
+			cout << endl;
+			this->PrintElement(x.PROGRAM_ID.NAME);
+			this->PrintElement(count_if(result.begin(), result.end(),
+				[&](const FirstAid_Program&s) {return s.PROGRAM_ID.NAME == x.PROGRAM_ID.NAME; }));
+			this->PrintLine(2);
+		}
+	}
+
+	//which first aid 
+	//choose
+	cout << "\t\tWhich program you want to return\n";
+	cout << "\t\tEnter program name\n";
+
+	reProgramName:
+	cin >> this->program.NAME;
+
+	if (duplicate.find(this->program.NAME) == duplicate.end()) {
+		cout << this->validcom;
+		Sleep(1000);
+		goto reProgramName;
+	}
+
+	//update
+	this->command.UpdateReturnFirstAid(this->program);
+
+	cout << "\t\tReturn Success\n\t\t";
+	system("PAUSE");
+	this->ApplicantMenuModule();
+
+
+}
