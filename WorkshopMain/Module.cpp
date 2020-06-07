@@ -16,11 +16,11 @@ Module::Module() {
 Module::~Module() {}
 
 template<class DataType> void Module::PrintElement(DataType data){
-	cout << left << setw(5) << "|" << setw(15) << data;
+	cout << left << setw(8) << "|" << setw(15) << data;
 }
 
 void Module::PrintLine(int columnnum) {
-	cout << "\n\n" << string(20 * columnnum, '-') << "\n\n";
+	cout << "\n\n" << string(23 * columnnum, '-') << "\n\n";
 }
 
 void Module::HeaderModule(string module) {
@@ -31,7 +31,6 @@ void Module::HeaderModule(string module) {
 	cout << "\t\t" << module << "\n\n";
 	cout << "\t\t---------------------------------------------\n";
 	cout << "\n\n";
-
 }
 
 void Module::IndexModule() {
@@ -51,7 +50,6 @@ repeatFunction:
 		goto repeatFunction;
 	}
 	
-
 	switch (this->choose) {
 	case 1:
 		this->StaffLoginModule();
@@ -333,6 +331,7 @@ void Module::ViewProgramStatusModule() {
 
 	auto result = this->command.ViewProgram(this->applicant);
 	
+	cout << "\t\tApprove Application\n";
 	cout << endl;
 	this->PrintElement("Program Name");
 	this->PrintElement("Date Apply");
@@ -343,15 +342,40 @@ void Module::ViewProgramStatusModule() {
 	this->PrintLine(6);
 
 	for (auto x : result) {
-		cout << endl;
-		this->PrintElement(x.PROGRAM_ID.NAME);
-		this->PrintElement(x.PROGRAM_ID.DATE_APPLY);
-		this->PrintElement(x.PROGRAM_ID.DATE_START);
-		this->PrintElement(this->command.BetweenDate(x.PROGRAM_ID.DATE_START));
-		this->PrintElement(x.PROGRAM_ID.TOTAL_APPLY);
-		this->PrintElement(x.DATE_APPROVE);
-		this->PrintLine(6);
+		if (!x.DATE_APPROVE.empty()) {
+			cout << endl;
+			this->PrintElement(x.PROGRAM_ID.NAME);
+			this->PrintElement(x.PROGRAM_ID.DATE_APPLY);
+			this->PrintElement(x.PROGRAM_ID.DATE_START);
+			this->PrintElement(this->command.BetweenDate(x.PROGRAM_ID.DATE_START));
+			this->PrintElement(x.PROGRAM_ID.TOTAL_APPLY);
+			this->PrintElement(x.DATE_APPROVE);
+			this->PrintLine(6);
+		}
+	}
 
+
+	cout << "\n\n\t\tPending Application\n";
+	cout << endl;
+	this->PrintElement("Program Name");
+	this->PrintElement("Date Apply");
+	this->PrintElement("Date Start");
+	this->PrintElement("Day Left");
+	this->PrintElement("Total Apply");
+	this->PrintElement("Approve Date");
+	this->PrintLine(6);
+
+	for (auto x : result) {
+		if (x.DATE_APPROVE.empty()) {
+			cout << endl;
+			this->PrintElement(x.PROGRAM_ID.NAME);
+			this->PrintElement(x.PROGRAM_ID.DATE_APPLY);
+			this->PrintElement(x.PROGRAM_ID.DATE_START);
+			this->PrintElement(this->command.BetweenDate(x.PROGRAM_ID.DATE_START));
+			this->PrintElement(x.PROGRAM_ID.TOTAL_APPLY);
+			this->PrintElement(x.DATE_APPROVE);
+			this->PrintLine(6);
+		}
 	}
 
 	cout << "\n\n\t\t***        End of the list       ***\n\t\t";
@@ -435,7 +459,7 @@ void Module::StaffIndexModule() {
 		this->ApplicationModule();
 		break;
 	case 3:
-		this->StaffAddModule();
+		this->StaffListModule();
 		break;
 	case 4:
 		this->IndexModule();
@@ -505,7 +529,7 @@ void Module::StaffAddModule() {
 	cout << "\t\t";
 	system("PAUSE");
 
-	this->StaffIndexModule();
+	this->StaffListModule();
 }
 
 void Module::ItemInventoryModule() {
@@ -522,11 +546,9 @@ void Module::ItemInventoryModule() {
 	}
 
 	cout << "\t\t1 = Inventory list(YES)\n";
-	cout << "\t\t2 = Inventory New(YES)\n";
-	cout << "\t\t3 = Refill Inventory(YES)\n";
-	cout << "\t\t4 = First Aid Add Box(YES)\n";
-	cout << "\t\t5 = Exit\n";
-	cout << "\t\tEnter your option [1, 2, 3, 4, 5] : ";
+	cout << "\t\t2 = First Aid List(YES)\n";
+	cout << "\t\t3 = Exit\n";
+	cout << "\t\tEnter your option [1, 2, 3] : ";
 	cin >> this->choose;
 
 	if (!this->command.ValidInteger(this->choose)) {
@@ -540,15 +562,9 @@ void Module::ItemInventoryModule() {
 		this->ItemListModule();
 		break;
 	case 2:
-		this->ItemAddModule();
+		this->FirstAidListModule();
 		break;
 	case 3:
-		this->RefillItemModule();
-		break;
-	case 4:
-		this->AidAddModule();
-		break;
-	case 5:
 		this->StaffIndexModule();
 		break;
 	default:
@@ -576,9 +592,41 @@ void Module::ItemListModule() {
 		this->PrintLine(3);
 	}
 
-	cout << "\t\t";
-	system("PAUSE");
-	this->ItemInventoryModule();
+	repeatChoose:
+	cout << "\n";
+	cout << "\t\tChoose you operation\n";
+	cout << "\t\t1 = Add New\n";
+	cout << "\t\t2 = Refill\n";
+	cout << "\t\t3 = Delete\n";
+	cout << "\t\t4 = Exit\n";
+	cout << "\t\tYour actoin :";
+	cin >> this->choose;
+
+	if (!this->command.ValidInteger(this->choose)) {
+		cout << this->validint;
+		Sleep(1000);
+		goto repeatChoose;
+	}
+
+	switch (this->choose){
+	case 1:
+		this->ItemAddModule();
+		break;
+	case 2:
+		this->RefillItemModule();
+		break;
+	case 3:
+		this->ItemRemoveModule();
+		break;
+	case 4:
+		this->ItemInventoryModule();
+		break;
+	default:
+		cout << this->validcom;
+		Sleep(1000);
+		goto repeatChoose;
+		break;
+	}
 }
 
 void Module::ItemAddModule() {
@@ -619,7 +667,8 @@ void Module::ItemAddModule() {
 	cout << "\t\tNew Item Added\n";
 	cout << "\t\t";
 	system("PAUSE");
-	this->ItemInventoryModule();
+	this->ItemListModule();
+
 }
 
 void Module::RefillItemModule() {
@@ -686,8 +735,8 @@ void Module::RefillItemModule() {
 
 	cout << "\t\tNew Stock Added\n\n\t\t";
 	system("PAUSE");
+	this->ItemListModule();
 
-	this->ItemInventoryModule();
 }
 
 void Module::AidAddModule() {
@@ -717,7 +766,7 @@ repeatFunction:
 	cout << "\t\tProcess Done\n\t\t";
 	system("PAUSE");
 
-	this->ItemInventoryModule();
+	this->FirstAidListModule();
 }
 
 void Module::ApplicationModule() {
@@ -893,8 +942,6 @@ void Module::FirstAidRefillModule() {
 		}
 	}
 
-
-
 	this->faidContent.FIRSTAID_ID.STATUS = 1;
 	this->command.UpdateFirstaidStatus(this->faidContent);
 
@@ -909,40 +956,41 @@ void Module::FirstAidRefillModule() {
 	system("PAUSE");
 
 }
-
+//item delete kena settle
 void Module::ReturnFirstaidModule() {
 	HeaderModule("Return Firstaid Module");
 
 	unordered_set<string> duplicate;
-	//number of first aid you own
-	//in what program
-
-	//list pragram and number of first aid
 	auto result = this->command.BorrowFirstaid(this->applicant);
 
+	if (result.size() == 0) {
+		cout << "\t\tNo first aid in your possession\n\t\t";
+		system("PAUSE");
+		this->ApplicantMenuModule();
+	}
+		
 	cout << endl;
 	this->PrintElement("Program Name");
 	this->PrintElement("Firstaids");
 	this->PrintLine(2);
 
-
+	int count = 0;
 	for (auto x : result) {
 
-		if (duplicate.insert(x.PROGRAM_ID.NAME).second) {
+		if (duplicate.insert(x.PROGRAM_ID.NAME).second && x.FIRSTAID_ID.STATUS == 1) {
 			cout << endl;
 			this->PrintElement(x.PROGRAM_ID.NAME);
 			this->PrintElement(count_if(result.begin(), result.end(),
 				[&](const FirstAid_Program&s) {return s.PROGRAM_ID.NAME == x.PROGRAM_ID.NAME; }));
 			this->PrintLine(2);
+			count++;
 		}
 	}
 
-	//which first aid 
-	//choose
-	cout << "\t\tWhich program you want to return\n";
-	cout << "\t\tEnter program name\n";
-
 	reProgramName:
+	cout << "\t\tWhich program you want to return\n";
+	cout << "\t\tEnter program name";
+
 	cin >> this->program.NAME;
 
 	if (duplicate.find(this->program.NAME) == duplicate.end()) {
@@ -951,12 +999,218 @@ void Module::ReturnFirstaidModule() {
 		goto reProgramName;
 	}
 
-	//update
 	this->command.UpdateReturnFirstAid(this->program);
+	this->command.RemoveContent(this->program);
+	this->command.UpdateReturnDate(this->program);
 
 	cout << "\t\tReturn Success\n\t\t";
 	system("PAUSE");
 	this->ApplicantMenuModule();
+}
 
 
+void Module::FirstAidListModule() {
+	HeaderModule("FirstAid List Module");
+
+	auto result = this->command.AllFirstaid();
+
+	cout << "Number of first aid : " << result.size();
+
+	cout << endl;
+	this->PrintElement("No Id");
+	this->PrintElement("Available?");
+	this->PrintLine(2);
+	for (auto x : result) {
+		this->PrintElement(x.ID);
+		x.STATUS == 2 ? this->PrintElement("Avaible") : this->PrintElement("Not Avaible");
+		this->PrintLine(2);
+	}
+	
+
+repeatChoose:
+	cout << "\n";
+	cout << "\t\tChoose you operation\n";
+	cout << "\t\t1 = Add New\n";
+	cout << "\t\t2 = Remove\n";
+	cout << "\t\t3 = Exit\n";
+	cout << "\t\tYour action :";
+	cin >> this->choose;
+
+	if (!this->command.ValidInteger(this->choose)) {
+		cout << this->validint;
+		Sleep(1000);
+		goto repeatChoose;
+	}
+
+	switch (this->choose) {
+	case 1:
+		this->AidAddModule();
+		break;
+	case 2:
+		this->FirstaidRemoveModule();
+		break;
+	case 3:
+		this->ItemInventoryModule();
+		break;
+	default:
+		cout << this->validcom;
+		Sleep(1000);
+		goto repeatChoose;
+		break;
+	}
+}
+
+void Module::StaffListModule() {
+	HeaderModule("Staff List Module");
+
+	auto result = this->command.AllStaff();
+
+	cout << endl;
+	this->PrintElement("First name");
+	this->PrintElement("Last Name");
+	this->PrintElement("Position");
+	this->PrintElement("Email address");
+	this->PrintLine(4);
+	for (auto x : result) {
+		cout << endl;
+		this->PrintElement(x.FIRSTNAME);
+		this->PrintElement(x.LASTNAME);
+		this->PrintElement(x.ROLE_ID.TITLE);
+		this->PrintElement(x.EMAIL);
+		this->PrintLine(4);
+	}
+
+repeatChoose:
+	cout << "\n";
+	cout << "\t\tChoose you operation\n";
+	cout << "\t\t1 = Add New\n";
+	cout << "\t\t2 = Remove\n";
+	cout << "\t\t3 = Exit\n";
+	cout << "\t\tYour actoin :";
+	cin >> this->choose;
+
+	if (!this->command.ValidInteger(this->choose)) {
+		cout << this->validint;
+		Sleep(1000);
+		goto repeatChoose;
+	}
+
+	switch (this->choose) {
+	case 1:
+		this->StaffAddModule();
+		break;
+	case 2:
+		this->StaffRemoveModule();
+	case 3:
+		this->StaffIndexModule();
+		break;
+	default:
+		cout << this->validcom;
+		Sleep(1000);
+		goto repeatChoose;
+		break;
+	}
+}
+
+void Module::StaffRemoveModule() {
+	repeatFuntion:
+	HeaderModule("Staff Remove Module");
+	
+	Staff remove;
+	unordered_set<string> hold;
+	auto result = this->command.AllStaff();
+	
+	cout << "\t\tName\n";
+	for (auto x : result) {
+		if (x.EMAIL != this->staff.EMAIL) {
+			hold.insert(x.EMAIL);
+			cout << "\t\t" << x.EMAIL << endl;
+		}
+	}
+	cout << "\t\tEnter the email to remove : ";
+	cin >> remove.EMAIL;
+
+	if (hold.find(remove.EMAIL) == hold.end()) {
+		cout << "Not found\n";
+		Sleep(1000);
+		goto repeatFuntion;
+	}
+
+	this->command.RemoveStaff(remove);
+
+	this->StaffListModule();
+}
+
+void Module::FirstaidRemoveModule() {
+	repeatFunction:
+	HeaderModule("First Aid Remove Module");
+
+	unordered_set<int> hold;
+	auto result = this->command.AllFirstaid();
+
+	cout << "Code\n";
+	for (auto x : result) {
+		if (x.STATUS == 2) {
+			hold.insert(x.ID);
+			cout << "\t\t" << x.ID << endl;
+		}
+	}
+
+	cout << "\t\tEnter code to remove : ";
+	cin >> this->choose;
+
+	if (!this->command.ValidInteger(this->choose)) {
+		cout << this->validint;
+		Sleep(1000);
+		goto repeatFunction;
+	}
+
+	if (hold.find(this->choose) == hold.end()) {
+		cout << "\t\tInvalid Code\n";
+		Sleep(1000);
+		goto repeatFunction;
+	}
+
+	this->command.RemoveFirstAid(this->choose);
+
+	this->FirstAidListModule();
+
+}
+
+void Module::ItemRemoveModule() {
+	repeatFunction:
+	HeaderModule("Item Remove Module");
+
+	unordered_set<string> temp;
+	auto result = this->command.ItemList();
+
+	cout << "List Of Item\n";
+	for (auto x : result) {
+		temp.insert(x.NAME);
+		cout << "\t\t" << x.NAME << "\n";
+	}
+
+	cout << "\n\t\tEnter item name to remove : ";
+	cin >> this->item.NAME;
+
+	if (temp.find(this->item.NAME) == temp.end()) {
+		cout << "\t\tItem not found\n";
+		Sleep(1000);
+		goto repeatFunction;
+	}
+
+	if (this->command.ConditionRemoveItem(this->item) > 0) {
+		cout << "\t\tCannot be deleted\n\t\tBeen used by applicant\n";
+		Sleep(1000);
+		system("PAUSE");
+		this->ItemListModule();
+	}
+
+	this->command.RemoveItem(this->item);
+
+	cout << "\t\tItem Deleted\n";
+	Sleep(1000);
+	system("PAUSE");
+
+	this->ItemListModule();
 }

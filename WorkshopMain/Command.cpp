@@ -369,6 +369,7 @@ vector<FirstAid_Program> Command::BorrowFirstaid(Applicant applicant) {
 		temp.FIRSTAID_ID.ID = OCI_GetInt(this->result, 2);
 		temp.PROGRAM_ID.ID = OCI_GetInt(this->result, 3);
 		temp.PROGRAM_ID.NAME = OCI_GetString(this->result, 4);
+		temp.FIRSTAID_ID.STATUS = OCI_GetInt(this->result, 5);
 
 		output.push_back(temp);
 	}
@@ -383,3 +384,100 @@ void Command::UpdateReturnFirstAid(Program program) {
 
 	this->Execute();
 }
+
+vector<FirstAid>Command::AllFirstaid() {
+	vector<FirstAid> output;
+	
+	OCI_Prepare(this->statement, OTEXT(&this->sqlAllFirstAid[0]));
+
+	this->Execute();
+	this->result = OCI_GetResultset(this->statement);
+
+	while (OCI_FetchNext(this->result)){
+		output.push_back({
+			OCI_GetInt(this->result, 1),
+			OCI_GetInt(this->result, 2)
+		});
+	}
+	return output;
+}
+
+void Command::RemoveContent(Program program) {
+	OCI_Prepare(this->statement, OTEXT(&this->sqlremoveContent[0]));
+
+	OCI_BindString(this->statement, ":NAME", &program.NAME[0], this->charLen);
+
+	this->Execute();
+}
+
+vector<Staff>Command::AllStaff() {
+	vector<Staff> output;
+	OCI_Prepare(this->statement, OTEXT(&this->sqlAllStaff[0]));
+
+	this->Execute();
+	this->result = OCI_GetResultset(this->statement);
+
+	while (OCI_FetchNext(this->result)){
+		
+		output.push_back({
+			0,
+			{0,OCI_GetString(this->result, 1)},
+			OCI_GetString(this->result, 2),
+			OCI_GetString(this->result, 3),
+			this->DateToString(OCI_GetDate(this->result, 4)),
+			OCI_GetString(this->result, 5),
+			""
+		});
+	}
+	return output;
+}
+
+void Command::RemoveStaff(Staff staff) {
+	OCI_Prepare(this->statement, OTEXT(&this->sqlremoveStaff[0]));
+
+	OCI_BindString(this->statement, ":EMAIL", &staff.EMAIL[0], this->charLen);
+
+	this->Execute();
+}
+
+void Command::RemoveFirstAid(int code) {
+	OCI_Prepare(this->statement, OTEXT(&this->sqlremoveFirstaid[0]));
+
+	OCI_BindInt(this->statement, ":ID", &code);
+
+	this->Execute();
+}
+
+void Command::UpdateReturnDate(Program program) {
+	OCI_Prepare(this->statement, OTEXT(&this->sqlupdateReturnDate[0]));
+
+	OCI_BindDate(this->statement, ":DATER", this->CurrentDate());
+	OCI_BindString(this->statement, ":NAME", &program.NAME[0], this->charLen);
+
+	this->Execute();
+}
+
+int Command::ConditionRemoveItem(Item item) {
+	int output = 0;
+	OCI_Prepare(this->statement, OTEXT(&this->sqlConditionRemoveItem[0]));
+
+	OCI_BindString(this->statement, ":NAME", &item.NAME[0], this->charLen);
+
+	this->Execute();
+	this->result = OCI_GetResultset(this->statement);
+
+	while (OCI_FetchNext(this->result)){
+		output = OCI_GetInt(this->result, 1);
+	}
+
+	return output;
+}
+
+void Command::RemoveItem(Item item) {
+	OCI_Prepare(this->statement, OTEXT(&this->sqlremoveItem[0]));
+
+	OCI_BindString(this->statement, ":NAME", &item.NAME[0], this->charLen);
+
+	this->Execute();
+}
+

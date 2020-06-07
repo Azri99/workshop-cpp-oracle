@@ -19,7 +19,10 @@ class Command : public Connection
 		string sqlitemListFilterZero = "select CONTENT.ID, ITEM.NAME, ITEM.DATE_LIMIT, SUM(CONTENT.TOTAL) TOTAL from ITEM left join CONTENT on ITEM.ID = CONTENT.ITEM_ID where TOTAL != 0 group by CONTENT.ID, ITEM.NAME, ITEM.DATE_LIMIT order by CONTENT.ID";
 		string sqlfirstaidSingleEmpty = "select * from FIRSTAID where STATUS = 2";
 		string sqlcheckFirstaidEmpty = "select count (*) from FIRSTAID_CONTENT where FIRSTAID_ID = :FIRSTAID and CONTENT_ID = :CONTENT";
-		string sqlBorrowFirstaid = "select FIRSTAID_PROGRAM.ID, FIRSTAID_PROGRAM.FIRSTAID_ID, FIRSTAID_PROGRAM.PROGRAM_ID, PROGRAM.NAME from PROGRAM join FIRSTAID_PROGRAM on FIRSTAID_PROGRAM.PROGRAM_ID = PROGRAM.ID where PROGRAM.APPLICANT_ID = :ID";
+		string sqlBorrowFirstaid = "select FIRSTAID_PROGRAM.ID, FIRSTAID_PROGRAM.FIRSTAID_ID, FIRSTAID_PROGRAM.PROGRAM_ID, PROGRAM.NAME, (select STATUS from FIRSTAID where ID = FIRSTAID_PROGRAM.FIRSTAID_ID) as STATUS from PROGRAM join FIRSTAID_PROGRAM on FIRSTAID_PROGRAM.PROGRAM_ID = PROGRAM.ID where PROGRAM.APPLICANT_ID = :ID and FIRSTAID_PROGRAM.DATE_RETURN is NULL";
+		string sqlAllFirstAid = "select * from FIRSTAID";
+		string sqlAllStaff = "select (select TITLE from ROLE where ID = ROLE_ID) as ROLE , FIRSTNAME,LASTNAME,BIRTHDATE,EMAIL from STAFF";
+		string sqlConditionRemoveItem = "select count(FIRSTAID_CONTENT.ID) as COUNT from FIRSTAID_CONTENT join CONTENT on CONTENT.ID = FIRSTAID_CONTENT.CONTENT_ID join ITEM on ITEM.ID = CONTENT.ITEM_ID where ITEM.NAME = :NAME";
 
 		string sqlnewApplicant = "insert into APPLICANT values (:ID, :FIRST, :LAST, :CONTACT, :TYPE)";
 		string sqlnewProgram = "insert into PROGRAM (APPLICANT_ID, NAME, DATE_APPLY , DATE_START, DATE_END, TOTAL_APPLY) values (:APPLICANT, :NAME, :DATEA, :DATES, :DATEE,  :TOTAL)";
@@ -34,7 +37,13 @@ class Command : public Connection
 		string sqlupdateItemTotal = "update CONTENT set TOTAL = TOTAL - :TOTAL where ID = :ID";
 		string sqlupdateFirstaidStatus = "update FIRSTAID set STATUS = :STATUS where ID = :ID";
 		string sqlupdateReturnFirstAid = "update FIRSTAID set STATUS = 2 where ID in(select FIRSTAID_ID from FIRSTAID_PROGRAM where PROGRAM_ID in(select ID from PROGRAM where NAME = :NAME))";
-		
+		string sqlupdateReturnDate = "update FIRSTAID_PROGRAM set DATE_RETURN = :DATER where PROGRAM_ID = (select ID from PROGRAM where NAME = :NAME)";
+
+		string sqlremoveContent = "delete from FIRSTAID_CONTENT where FIRSTAID_ID in(select FIRSTAID_ID from FIRSTAID_PROGRAM where PROGRAM_ID in(select ID from PROGRAM where NAME = :NAME))";
+		string sqlremoveStaff = "delete from STAFF where EMAIL = :EMAIL";
+		string sqlremoveFirstaid = "delete from FIRSTAID where ID = :ID";
+		string sqlremoveItem = "delete ITEM, CONTENT from ITEM inner join CONTENT where ITEM.ID = CONTENT.ITEM_ID ITEM.NAME = :NAME";
+
 public:
 		Command();
 		~Command();
@@ -121,22 +130,73 @@ public:
 		//output null
 		void AssigntFirstaidContent(FirstAid_Content);
 
+		//check if tthe first aid is valid or not
+		//input firstaid_content data
+		//output 0, 1
 		int CheckFirstaidEmpty(FirstAid_Content);
 
+
+
+		//update the value of the item in the repo
+		//ipnut  id and total
+		//output nill
 		void UpdateFirstaidEmpty(FirstAid_Content);
 
+		//update the value of the item in the repo
+		//ipnut  id and total
+		//output nill
 		void UpdateItemTotal(FirstAid_Content);
 		
+
+		//Update to status of the first aid after being borrow
+		//input program name
+		//output null
 		void UpdateFirstaidStatus(FirstAid_Content);
 
+		//approve the applicant application
+		//input firstaid_program data
+		//output null
 		void ProgramApprove(FirstAid_Program);
 
+		//list of first aid that been borrow by user
+		//input applicant id
+		//output list of first adi and program name
 		vector<FirstAid_Program> BorrowFirstaid(Applicant);
 
+		//Update to status of the first aid after being return
+		//input program name
+		//output null
 		void UpdateReturnFirstAid(Program);
+
+		//list of all the first aid box
+		//input null
+		//output null
+		vector<FirstAid> AllFirstaid();
+
+		//remove all the content in the first aid
+		//input first aid program name
+		//output null
+		void RemoveContent(Program);
+
+
+		//list of all the STAFF
+		//input null
+		//output null
+		vector<Staff> AllStaff();
+
+		//remove  first aid
+		//input first aid program name
+		//output null
+		void RemoveStaff(Staff);
+
+		void RemoveFirstAid(int);
+
+		void UpdateReturnDate(Program);
+
+		int ConditionRemoveItem(Item);
+
+		void RemoveItem(Item);
 };		
 
-
 #endif
-
 

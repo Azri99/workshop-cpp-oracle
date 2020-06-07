@@ -125,7 +125,20 @@ public:
 	//first aid refill
 	void FirstAidRefillModule();
 
+	//list all first aid
+	void FirstAidListModule();
 
+	//list all staff
+	void StaffListModule();
+
+	//to remove item in inventory
+	void StaffRemoveModule();
+	
+	//to remove first box
+	void FirstaidRemoveModule();
+
+	//to remove item
+	void ItemRemoveModule();
 };
 
 #endif // !MODULE_H
