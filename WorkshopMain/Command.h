@@ -42,7 +42,8 @@ class Command : public Connection
 		string sqlremoveContent = "delete from FIRSTAID_CONTENT where FIRSTAID_ID in(select FIRSTAID_ID from FIRSTAID_PROGRAM where PROGRAM_ID in(select ID from PROGRAM where NAME = :NAME))";
 		string sqlremoveStaff = "delete from STAFF where EMAIL = :EMAIL";
 		string sqlremoveFirstaid = "delete from FIRSTAID where ID = :ID";
-		string sqlremoveItem = "delete ITEM, CONTENT from ITEM inner join CONTENT where ITEM.ID = CONTENT.ITEM_ID ITEM.NAME = :NAME";
+		string sqlremoveItemContent = "delete from CONTENT where ITEM_ID = (select ID from ITEM where NAME = :NAME)";
+		string sqlremoveItem = "delete from ITEM where NAME = :NAME";
 
 public:
 		Command();
@@ -194,6 +195,8 @@ public:
 		void UpdateReturnDate(Program);
 
 		int ConditionRemoveItem(Item);
+
+		void RemoveItemContent(Item);
 
 		void RemoveItem(Item);
 };		

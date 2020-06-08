@@ -1184,7 +1184,7 @@ void Module::ItemRemoveModule() {
 	unordered_set<string> temp;
 	auto result = this->command.ItemList();
 
-	cout << "List Of Item\n";
+	cout << "\t\tList Of Item\n";
 	for (auto x : result) {
 		temp.insert(x.NAME);
 		cout << "\t\t" << x.NAME << "\n";
@@ -1206,6 +1206,7 @@ void Module::ItemRemoveModule() {
 		this->ItemListModule();
 	}
 
+	this->command.RemoveItemContent(this->item);
 	this->command.RemoveItem(this->item);
 
 	cout << "\t\tItem Deleted\n";

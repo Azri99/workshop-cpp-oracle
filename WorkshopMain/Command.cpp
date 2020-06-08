@@ -473,6 +473,15 @@ int Command::ConditionRemoveItem(Item item) {
 	return output;
 }
 
+
+void Command::RemoveItemContent(Item item) {
+	OCI_Prepare(this->statement, OTEXT(&this->sqlremoveItemContent[0]));
+
+	OCI_BindString(this->statement, ":NAME", &item.NAME[0], this->charLen);
+
+	this->Execute();
+}
+
 void Command::RemoveItem(Item item) {
 	OCI_Prepare(this->statement, OTEXT(&this->sqlremoveItem[0]));
 
