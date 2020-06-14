@@ -38,15 +38,16 @@ repeatFunction:
 	HeaderModule("Index Module");
 
 	cout << "\t\tAvailable Action :\n\n";
-	cout << "\t\t1 = Staff Login (DEV)\n";
-	cout << "\t\t2 = Applicant(DEV)\n";
+	cout << "\t\t1 = Staff Login\n";
+	cout << "\t\t2 = Applicant\n";
 	cout << "\t\t3 = Exit\n";
 	cout << "\t\tEnter your option [1, 2, 3] : ";
 	cin >> this->choose;
 
 	if (!this->command.ValidInteger(this->choose)) {
 		cout << this->validint;
-		Sleep(1000);
+		cout << "\t\t";
+		system("PAUSE");;
 		goto repeatFunction;
 	}
 	
@@ -62,7 +63,8 @@ repeatFunction:
 		break;
 	default:
 		cout << this->validcom;
-		Sleep(1000);
+		cout << "\t\t";
+		system("PAUSE");;
 		goto repeatFunction;
 		break;
 	}
@@ -78,15 +80,16 @@ repeatFunction:
 	HeaderModule("Applicant Index Module");
 
 	cout << "\t\tAvailable Action :\n\n";
-	cout << "\t\t1 = First Time Applicant(YES)\n";
-	cout << "\t\t2 = Applicant Login(YES)\n";
+	cout << "\t\t1 = First Time Applicant\n";
+	cout << "\t\t2 = Applicant Login\n";
 	cout << "\t\t3 = Exit\n";
 	cout << "\t\tEnter your option [1, 2, 3] : ";
 	cin >> this->choose;
 
 	if (!this->command.ValidInteger(this->choose)) {
 		cout << this->validint;
-		Sleep(1000);
+		cout << "\t\t";
+		system("PAUSE");;
 		goto repeatFunction;
 	}
 
@@ -102,7 +105,8 @@ repeatFunction:
 		break;
 	default:
 		cout << this->validcom;
-		Sleep(1000);
+		cout << "\t\t";
+		system("PAUSE");;
 		goto repeatFunction;
 		break;
 	}
@@ -126,7 +130,8 @@ repeatId:
 
 		if (!this->command.ValidInteger(this->choose)) {
 			cout << validint;
-			Sleep(1000);
+			cout << "\t\t";
+			system("PAUSE");;
 			goto repeatErr;
 		}
 
@@ -162,7 +167,8 @@ repeatId:
 
 	if (!this->command.ValidEmail(this->applicant.CONTACT)) {
 		cout << validemail;
-		Sleep(1000);
+		cout << "\t\t";
+		system("PAUSE");;
 		goto repeatEmail;
 	}
 
@@ -170,7 +176,8 @@ repeatId:
 
 	cout << "\t\tNew Record Save...Welcome " << this->applicant.FIRST_NAME << endl;
 	cout << "\t\tYou Are " << this->applicant.TYPE << endl;
-	Sleep(1000);
+	cout << "\t\t";
+	system("PAUSE");;
 
 	this->ApplicantIndexModule();
 }
@@ -194,7 +201,8 @@ repeatFunction:
 		
 		if (!this->command.ValidInteger(this->choose)) {
 			cout << validint;
-			Sleep(1000);
+			cout << "\t\t";
+			system("PAUSE");;
 			goto repeatTry;
 		}
 
@@ -209,7 +217,8 @@ repeatFunction:
 	}
 	
 	cout << "\t\tYou Are " << this->applicant.TYPE << endl;
-	Sleep(1000);
+	cout << "\t\t";
+	system("PAUSE");;
 
 	this->ApplicantMenuModule();
 
@@ -220,16 +229,16 @@ repeatFunction:
 	HeaderModule("Applicant Menu Module");
 
 	cout << "\t\tAvailable Action :\n\n";
-	cout << "\t\t1 = Make an application (YES)\n";
-	cout << "\t\t2 = Return first aid kit (NOT)\n";
-	cout << "\t\t3 = View application status (YES)\n";
+	cout << "\t\t1 = Make an application\n";
+	cout << "\t\t2 = Return first aid kit\n";
+	cout << "\t\t3 = View application status\n";
 	cout << "\t\t4 = Exit\n";
 	cout << "\t\tEnter your option [1, 2, 3, 4, 5] : ";
 	cin >> this->choose;
 	
 	if (!this->command.ValidInteger(this->choose)) {
 		cout << this->validint;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");
 		goto repeatFunction;
 	}
 
@@ -248,7 +257,7 @@ repeatFunction:
 		break;
 	default:
 		cout << this->validcom;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatFunction;
 		break;
 	}
@@ -268,7 +277,8 @@ void Module::NewProgramModule() {
 
 	if (!this->command.ValidDate(this->program.DATE_START)) {
 		cout << "\t\tInvalid date format\n";
-		Sleep(1000);
+		cout << "\t\t";
+		system("PAUSE");;
 		goto repeatDateStart;
 	}
 
@@ -276,7 +286,7 @@ void Module::NewProgramModule() {
 		 this->command.CompareDate(this->program.DATE_START) == 1) {
 		cout << "\t\t***Cannot apply when the program date is already pass   ***\n";
 		cout << "\t\t***Program date must at least 7 day from the application***\n";
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");
 		goto repeatDateStart;
 	}
 
@@ -287,13 +297,13 @@ void Module::NewProgramModule() {
 
 	if (!this->command.ValidDate(this->program.DATE_END)) {
 		cout << this->validdate;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatDateEnd;
 	}
 
 	if (this->command.CompareDate(this->program.DATE_START, this->program.DATE_END) == 1) {
 		cout << "\t\t***Program end program must be the same as start or later***\n";
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatDateEnd;
 	}
 
@@ -303,13 +313,13 @@ void Module::NewProgramModule() {
 
 	if (!this->command.ValidInteger(this->program.TOTAL_APPLY)) {
 		cout << this->validint;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatTotal;
 	}
 
 	if (this->program.TOTAL_APPLY <= 0 || this->program.TOTAL_APPLY >= 4) {
 		cout << "\t\t***Min 1 Max 3***\n";
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatTotal;
 	}
 
@@ -319,8 +329,8 @@ void Module::NewProgramModule() {
 	this->command.NewProgram(this->program);
 
 	cout << "\t\tNew application by " << this->applicant.TYPE << endl;
-	cout << "\t\t" << this->applicant.FIRST_NAME << " ID is " << this->applicant.ID;
-	Sleep(1000);
+	cout << "\t\t" << this->applicant.FIRST_NAME << " ID is " << this->applicant.ID<< "\n";
+	cout << "\t\t";system("PAUSE");;
 
 	this->ApplicantMenuModule();
 }
@@ -395,7 +405,7 @@ void Module::StaffLoginModule() {
 
 	if (!this->command.ValidEmail(this->staff.EMAIL)) {
 		cout << this->validemail;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatEmail;
 	}
 
@@ -413,7 +423,8 @@ void Module::StaffLoginModule() {
 
 		if (!this->command.ValidInteger(this->choose)) {
 			cout << this->validint;
-			Sleep(1000);
+			cout << "\t\t";
+			system("PAUSE");;
 			goto repeatTry;
 		}
 		switch (this->choose) {
@@ -426,8 +437,9 @@ void Module::StaffLoginModule() {
 		}
 	}
 
-	cout << "\t\tYou are " << this->staff.ROLE_ID.TITLE;
-	Sleep(1000);
+	cout << "\t\tYou are " << this->staff.ROLE_ID.TITLE << "\n";
+	cout << "\t\t";
+	system("PAUSE");;
 
 	this->StaffIndexModule();
 
@@ -438,16 +450,16 @@ void Module::StaffIndexModule() {
 	HeaderModule("Staff Index Module");
 
 	cout << "\t\tAvailable Action :\n\n";
-	cout << "\t\t1 = Item Inventory(DEV)\n";
-	cout << "\t\t2 = Application(DEV)\n";
-	cout << "\t\t3 = Staff(DEV)\n";
+	cout << "\t\t1 = Item Inventory\n";
+	cout << "\t\t2 = Application\n";
+	cout << "\t\t3 = Staff\n";
 	cout << "\t\t4 = Exit\n";
-	cout << "\t\tEnter your option [1, 2, 3, 4, 5] : ";
+	cout << "\t\tEnter your option [1, 2, 3, 4] : ";
 	cin >> this->choose;
 
 	if (!this->command.ValidInteger(this->choose)) {
 		cout << this->validint;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatFunction;
 	}
 
@@ -466,7 +478,7 @@ void Module::StaffIndexModule() {
 		break;
 	default:
 		cout << "\t\t***Invalid Combination***\n";
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatFunction;
 		break;
 	}
@@ -488,13 +500,13 @@ void Module::StaffAddModule() {
 
 		if (!this->command.ValidInteger(this->choose)) {
 			cout << this->validint;
-			Sleep(1000);
+			cout << "\t\t";system("PAUSE");;
 			goto repeatRole;
 		}
 
 		if(this->choose < 1 || this->choose > 2){
 			cout << this->validcom;
-			Sleep(1000);
+			cout << "\t\t";system("PAUSE");;
 			goto repeatRole;
 		}
 
@@ -514,7 +526,7 @@ void Module::StaffAddModule() {
 
 	if (!this->command.ValidDate(newStaff.BIRTHDATE)) {
 		cout << this->validdate;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto reBirth;
 	}
 
@@ -545,15 +557,15 @@ void Module::ItemInventoryModule() {
 		this->StaffIndexModule();
 	}
 
-	cout << "\t\t1 = Inventory list(YES)\n";
-	cout << "\t\t2 = First Aid List(YES)\n";
+	cout << "\t\t1 = Inventory list\n";
+	cout << "\t\t2 = First Aid List\n";
 	cout << "\t\t3 = Exit\n";
 	cout << "\t\tEnter your option [1, 2, 3] : ";
 	cin >> this->choose;
 
 	if (!this->command.ValidInteger(this->choose)) {
 		cout << this->validint;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatFunction;
 	}
 
@@ -579,17 +591,15 @@ void Module::ItemListModule() {
 
 	auto result = this->command.ItemList();
 
-	this->PrintElement("Id");
 	this->PrintElement("Name");
 	this->PrintElement("Number In Stock");
-	this->PrintLine(3);
+	this->PrintLine(2);
 
 	for (auto x : result) {
 		cout << endl;
-		this->PrintElement(x.ID);
 		this->PrintElement(x.NAME);
 		this->PrintElement(x.MAX_LIMIT);
-		this->PrintLine(3);
+		this->PrintLine(2);
 	}
 
 	repeatChoose:
@@ -604,7 +614,7 @@ void Module::ItemListModule() {
 
 	if (!this->command.ValidInteger(this->choose)) {
 		cout << this->validint;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatChoose;
 	}
 
@@ -623,7 +633,7 @@ void Module::ItemListModule() {
 		break;
 	default:
 		cout << this->validcom;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatChoose;
 		break;
 	}
@@ -641,7 +651,7 @@ void Module::ItemAddModule() {
 
 	if (!this->command.ValidInteger(this->item.MAX_LIMIT)) {
 		cout << this->validint;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatMax;
 	}
 
@@ -652,13 +662,13 @@ void Module::ItemAddModule() {
 	
 	if (!this->command.ValidInteger(this->item.DATE_LIMIT)) {
 		cout << this->validint;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatDateL;
 	}
 
 	if (this->item.DATE_LIMIT < 1 || this->item.DATE_LIMIT > 2) {
 		cout << this->validcom;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatDateL;
 	}
 
@@ -677,12 +687,21 @@ void Module::RefillItemModule() {
 	
 	auto result = this->command.ItemList();
 
+
+
+	this->PrintElement("Choose");
+	this->PrintElement("Name");
+	this->PrintLine(2);
+
 	auto i = 1;
 	for (auto x : result) {
-		cout << "\t\t" << i << " = " << x.ID << "|" << x.NAME << endl;
+		cout << endl;
+		this->PrintElement(i);
+		this->PrintElement(x.NAME);
+		this->PrintLine(2);
 		i++;
 	}
-	
+
 	cout << "\t\tYour Choose : ";
 	cin >> this->choose;
 
@@ -690,7 +709,7 @@ void Module::RefillItemModule() {
 
 	if (!this->command.ValidInteger(this->choose)) {
 		cout << this->validint;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatFunction;
 	}
 
@@ -704,13 +723,13 @@ void Module::RefillItemModule() {
 
 	if (!this->command.ValidInteger(this->content.TOTAL)) {
 		cout << this->validint;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatTotal;
 	}
 
 	if (this->content.TOTAL < 0 || this->content.TOTAL > 100) {
 		cout << "\t\tValue To big (>100) or small (<0)\n";
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatTotal;
 	}
 
@@ -722,7 +741,7 @@ void Module::RefillItemModule() {
 
 		if (!this->command.ValidDate(this->content.DATE_EXP)) {
 			cout << this->validdate;
-			Sleep(1000);
+			cout << "\t\t";system("PAUSE");;
 			goto repeatDate;
 		}
 
@@ -748,7 +767,7 @@ repeatFunction:
 
 	if (!this->command.ValidInteger(this->faid.STATUS)) {
 		cout << this->validint;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatFunction;
 	}
 
@@ -780,7 +799,7 @@ void Module::ApplicationModule() {
 
 	if (!this->command.ValidInteger(this->choose)) {
 		cout << this->validint;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatFunction;
 	}
 
@@ -791,7 +810,7 @@ void Module::ApplicationModule() {
 		this->StaffIndexModule();
 	default:
 		cout << this->validcom;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatFunction;
 		break;
 	}
@@ -807,7 +826,7 @@ void Module::ApplicationListModule() {
 
 	if (result.size() == 0) {
 		cout << "\t\tList is empty\n\n";
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		this->ApplicationModule();
 	}
 
@@ -839,7 +858,7 @@ void Module::ApplicationListModule() {
 
 	if (!this->command.ValidInteger(this->choose)) {
 		cout << this->validint;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatAsk;
 	}
 
@@ -861,8 +880,6 @@ void Module::ApplicationListModule() {
 			this->FirstAidRefillModule();
 		}
 
-
-
 		this->ApplicationModule();
 		break;
 	case 2:
@@ -872,7 +889,7 @@ void Module::ApplicationListModule() {
 		break;
 	default:
 		cout << this->validcom;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatAsk;
 	}
 
@@ -920,13 +937,13 @@ void Module::FirstAidRefillModule() {
 
 			if (!this->command.ValidInteger(this->faidContent.TOTAL)) {
 				cout << this->validint;
-				Sleep(1000);
+				cout << "\t\t";system("PAUSE");;
 				goto reItem;
 			}
 			if (this->faidContent.TOTAL > x.MAX_LIMIT) {
 				cout << this->validcom;
 				cout << "\t\tMax is " << x.MAX_LIMIT << endl;
-				Sleep(1000);
+				cout << "\t\t";system("PAUSE");;
 				goto reItem;
 			}
 
@@ -995,7 +1012,7 @@ void Module::ReturnFirstaidModule() {
 
 	if (duplicate.find(this->program.NAME) == duplicate.end()) {
 		cout << this->validcom;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto reProgramName;
 	}
 
@@ -1038,7 +1055,7 @@ repeatChoose:
 
 	if (!this->command.ValidInteger(this->choose)) {
 		cout << this->validint;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatChoose;
 	}
 
@@ -1054,7 +1071,7 @@ repeatChoose:
 		break;
 	default:
 		cout << this->validcom;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatChoose;
 		break;
 	}
@@ -1091,7 +1108,7 @@ repeatChoose:
 
 	if (!this->command.ValidInteger(this->choose)) {
 		cout << this->validint;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatChoose;
 	}
 
@@ -1106,7 +1123,7 @@ repeatChoose:
 		break;
 	default:
 		cout << this->validcom;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatChoose;
 		break;
 	}
@@ -1120,24 +1137,32 @@ void Module::StaffRemoveModule() {
 	unordered_set<string> hold;
 	auto result = this->command.AllStaff();
 	
-	cout << "\t\tName\n";
+
+	cout << endl;
+	this->PrintElement("Email address");
+	this->PrintLine(1);
 	for (auto x : result) {
 		if (x.EMAIL != this->staff.EMAIL) {
+			cout << endl;
 			hold.insert(x.EMAIL);
-			cout << "\t\t" << x.EMAIL << endl;
+			this->PrintElement(x.EMAIL);
+			this->PrintLine(1);
 		}
 	}
+
 	cout << "\t\tEnter the email to remove : ";
 	cin >> remove.EMAIL;
 
 	if (hold.find(remove.EMAIL) == hold.end()) {
 		cout << "Not found\n";
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatFuntion;
 	}
 
 	this->command.RemoveStaff(remove);
-
+	cout << "\t\tDone Remove\n";
+	cout << "\t\t";
+	system("PAUSE");
 	this->StaffListModule();
 }
 
@@ -1148,11 +1173,15 @@ void Module::FirstaidRemoveModule() {
 	unordered_set<int> hold;
 	auto result = this->command.AllFirstaid();
 
-	cout << "Code\n";
+	cout << endl;
+	this->PrintElement("Code");
+	this->PrintLine(1);
 	for (auto x : result) {
 		if (x.STATUS == 2) {
+			cout << endl;
 			hold.insert(x.ID);
-			cout << "\t\t" << x.ID << endl;
+			this->PrintElement(x.ID);
+			this->PrintLine(1);
 		}
 	}
 
@@ -1161,18 +1190,20 @@ void Module::FirstaidRemoveModule() {
 
 	if (!this->command.ValidInteger(this->choose)) {
 		cout << this->validint;
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatFunction;
 	}
 
 	if (hold.find(this->choose) == hold.end()) {
 		cout << "\t\tInvalid Code\n";
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatFunction;
 	}
 
 	this->command.RemoveFirstAid(this->choose);
-
+	cout << "\t\tDone Remove\n";
+	cout << "\t\t";
+	system("PAUSE");
 	this->FirstAidListModule();
 
 }
@@ -1184,24 +1215,29 @@ void Module::ItemRemoveModule() {
 	unordered_set<string> temp;
 	auto result = this->command.ItemList();
 
-	cout << "\t\tList Of Item\n";
+	
+	cout << endl;
+	this->PrintElement("List Of Item");
+	this->PrintLine(1);
 	for (auto x : result) {
 		temp.insert(x.NAME);
-		cout << "\t\t" << x.NAME << "\n";
+		this->PrintElement(x.NAME);
+		this->PrintLine(1);
 	}
+
 
 	cout << "\n\t\tEnter item name to remove : ";
 	cin >> this->item.NAME;
 
 	if (temp.find(this->item.NAME) == temp.end()) {
 		cout << "\t\tItem not found\n";
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		goto repeatFunction;
 	}
 
 	if (this->command.ConditionRemoveItem(this->item) > 0) {
 		cout << "\t\tCannot be deleted\n\t\tBeen used by applicant\n";
-		Sleep(1000);
+		cout << "\t\t";system("PAUSE");;
 		system("PAUSE");
 		this->ItemListModule();
 	}
@@ -1210,7 +1246,7 @@ void Module::ItemRemoveModule() {
 	this->command.RemoveItem(this->item);
 
 	cout << "\t\tItem Deleted\n";
-	Sleep(1000);
+	cout << "\t\t";system("PAUSE");;
 	system("PAUSE");
 
 	this->ItemListModule();
