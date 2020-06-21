@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <unordered_set>
 #include <unordered_map>
+#include <map>
 #include "Command.h"
 #include "Module.h"
 #include "TableStruct.h"
@@ -22,6 +23,8 @@ template<class DataType> void Module::PrintElement(DataType data){
 void Module::PrintLine(int columnnum) {
 	cout << "\n\n" << string(23 * columnnum, '-') << "\n\n";
 }
+
+
 
 void Module::HeaderModule(string module) {
 	system("CLS");
@@ -232,7 +235,8 @@ repeatFunction:
 	cout << "\t\t1 = Make an application\n";
 	cout << "\t\t2 = Return first aid kit\n";
 	cout << "\t\t3 = View application status\n";
-	cout << "\t\t4 = Exit\n";
+	cout << "\t\t4 = Summary\n";
+	cout << "\t\t5 = Exit\n";
 	cout << "\t\tEnter your option [1, 2, 3, 4, 5] : ";
 	cin >> this->choose;
 	
@@ -253,6 +257,9 @@ repeatFunction:
 		this->ViewProgramStatusModule();
 		break;
 	case 4:
+		this->ReportModuleApplicant();
+		break;
+	case 5:
 		this->IndexModule();
 		break;
 	default:
@@ -453,8 +460,9 @@ void Module::StaffIndexModule() {
 	cout << "\t\t1 = Item Inventory\n";
 	cout << "\t\t2 = Application\n";
 	cout << "\t\t3 = Staff\n";
-	cout << "\t\t4 = Exit\n";
-	cout << "\t\tEnter your option [1, 2, 3, 4] : ";
+	cout << "\t\t4 = Sumary\n";
+	cout << "\t\t5 = Exit\n";
+	cout << "\t\tEnter your option [1, 2, 3, 4, 5] : ";
 	cin >> this->choose;
 
 	if (!this->command.ValidInteger(this->choose)) {
@@ -474,6 +482,9 @@ void Module::StaffIndexModule() {
 		this->StaffListModule();
 		break;
 	case 4:
+		this->ReportModuleStaff();
+		break;
+	case 5:
 		this->IndexModule();
 		break;
 	default:
@@ -1222,4 +1233,87 @@ void Module::ItemRemoveModule() {
 	system("PAUSE");
 
 	this->ItemListModule();
+}
+
+void Module::ReportModuleStaff() {
+	repeat:
+	HeaderModule("Report Module Staff");
+	
+	map<string, int> applicantNumberOfBorrow;
+	map<string, int> frequentMonthBorrow;
+	
+	auto result = this->command.GenerateReport();
+
+	for (auto x : result) {
+		//section applicant number borrow start
+		if(applicantNumberOfBorrow.find(x.PROGRAM_ID.APPLICANT_ID.ID) == applicantNumberOfBorrow.end())
+			applicantNumberOfBorrow.insert(make_pair(x.PROGRAM_ID.APPLICANT_ID.ID, count_if(result.begin(), result.end(), 
+					[&](FirstAid_Program&s) {return s.PROGRAM_ID.APPLICANT_ID.ID == x.PROGRAM_ID.APPLICANT_ID.ID; })));
+		//section applicant number borrow end
+
+		//calculate month frequent start
+		if(frequentMonthBorrow.find(x.PROGRAM_ID.DATE_START) == frequentMonthBorrow.end())
+			frequentMonthBorrow.insert(make_pair(x.PROGRAM_ID.DATE_START, count_if(result.begin(), result.end(),
+				[&](FirstAid_Program&s) {return s.PROGRAM_ID.DATE_START == x.PROGRAM_ID.DATE_START; })));
+		//calculate month frequent end
+	}
+
+	cout << "\t\tProgram base on month";
+	this->PrintLine(2);
+	this->PrintElement("Month");
+	this->PrintElement("Graph");
+	this->PrintLine(2);
+	for (auto x : frequentMonthBorrow) {
+		cout << endl;
+		this->PrintElement(x.first);
+		this->PrintElement(string(x.second, '#'));
+		this->PrintLine(2);
+	}
+
+	cout << "\t\tProgram Approve";
+	this->PrintLine(3);
+	this->PrintElement("Approve");
+	this->PrintElement("Not Approve");
+	this->PrintElement("Program Total");
+	this->PrintLine(3);
+	this->PrintElement(count_if(result.begin(), result.end(),
+			[&](FirstAid_Program&s) {return s.DATE_APPROVE != ""; }));
+	this->PrintElement(count_if(result.begin(), result.end(),
+			[&](FirstAid_Program&s) {return s.DATE_APPROVE == ""; }));
+	this->PrintElement(result.size());
+	this->PrintLine(3);
+
+	cout << "\t\tWho who most borrow";
+	this->PrintLine(2);
+	this->PrintElement("Matric");
+	this->PrintElement("Borrow time");
+	this->PrintLine(2);
+	for (auto x : applicantNumberOfBorrow) {
+		this->PrintElement(x.first);
+		this->PrintElement(x.second);
+		this->PrintLine(2);
+	}
+	system("PAUSE");
+	this->StaffIndexModule();
+}
+
+void Module::ReportModuleApplicant() {
+	HeaderModule("Report Module Applicant");
+
+	auto result = this->command.GenerateReport(this->applicant);
+	cout << "\t\tProgram Approve";
+	this->PrintLine(3);
+	this->PrintElement("Approve");
+	this->PrintElement("Not Approve");
+	this->PrintElement("Program Total");
+	this->PrintLine(3);
+	this->PrintElement(count_if(result.begin(), result.end(),
+		[&](FirstAid_Program&s) {return s.DATE_APPROVE != ""; }));
+	this->PrintElement(count_if(result.begin(), result.end(),
+		[&](FirstAid_Program&s) {return s.DATE_APPROVE == ""; }));
+	this->PrintElement(result.size());
+	this->PrintLine(3);
+
+	system("PAUSE");
+	this->ApplicantMenuModule();
 }

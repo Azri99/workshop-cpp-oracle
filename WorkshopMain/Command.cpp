@@ -509,3 +509,60 @@ void Command::RemoveItem(Item item) {
 	this->Execute();
 }
 
+vector<FirstAid_Program> Command::GenerateReport() {
+	vector<FirstAid_Program> output;
+	FirstAid_Program temp;
+
+	OCI_Prepare(this->statement, OTEXT(&this->sqlGenerateReport_Staff[0]));
+
+	this->Execute();
+	this->result = OCI_GetResultset(this->statement);
+
+	while (OCI_FetchNext(this->result)){
+		temp.PROGRAM_ID.APPLICANT_ID.ID = OCI_GetString(this->result, 1);
+
+		temp.PROGRAM_ID.DATE_START = OCI_GetString(this->result, 2);
+		
+		temp.DATE_RETURN = "";
+		temp.DATE_APPROVE = "";
+
+		if (OCI_GetDate(this->result, 3) != nullptr)
+			temp.DATE_APPROVE = this->DateToString(OCI_GetDate(this->result, 3));
+
+		if(OCI_GetDate(this->result, 4) != nullptr)
+			temp.DATE_RETURN = this->DateToString(OCI_GetDate(this->result, 4));
+		
+		output.push_back(temp);
+	}
+
+	return output;
+}
+
+vector<FirstAid_Program> Command::GenerateReport(Applicant applicant) {
+	vector<FirstAid_Program> output;
+	FirstAid_Program temp;
+
+	OCI_Prepare(this->statement, OTEXT(&this->sqlGenerateReport_Applicant[0]));
+
+	OCI_BindString(this->statement, ":APPLICANT", &applicant.ID[0], this->charLen);
+
+	this->Execute();
+	this->result = OCI_GetResultset(this->statement);
+
+	while (OCI_FetchNext(this->result)) {
+		temp.PROGRAM_ID.APPLICANT_ID.ID = OCI_GetString(this->result, 1);
+		temp.PROGRAM_ID.DATE_START = OCI_GetString(this->result, 2);
+
+		temp.DATE_RETURN = "";
+		temp.DATE_APPROVE = "";
+		if (OCI_GetDate(this->result, 3) != nullptr)
+			temp.DATE_APPROVE = this->DateToString(OCI_GetDate(this->result, 3));
+
+		if (OCI_GetDate(this->result, 4) != nullptr)
+			temp.DATE_RETURN = this->DateToString(OCI_GetDate(this->result, 4));
+
+		output.push_back(temp);
+	}
+
+	return output;
+}

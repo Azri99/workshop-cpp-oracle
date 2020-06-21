@@ -33,7 +33,8 @@ public:
 	
 	//print line untuk seperate column
 	void PrintLine(int);
-
+	
+	
 	//Header
 	void HeaderModule(string);
 	
@@ -43,10 +44,7 @@ public:
 	//Exit Module 
 	//Tamat la kisahh benda ni
 	void ExitModule();
-	
-	////////////////////////
-	//Applicant Module Start
-	
+		
 	//Applicant Index Module
 	//Menu utama untuk pemohon
 	void ApplicantIndexModule();
@@ -74,13 +72,7 @@ public:
 	//pulang first aid
 	void ReturnFirstaidModule();
 
-	//////////////////////
-	//Applicant Module End
-
-
-	//////////////////////
-	//Staff Module Start
-
+	void ReportModuleApplicant();
 
 	//Staff Login Module
 	//kita log masuk la apa lagi
@@ -136,6 +128,9 @@ public:
 	
 	//to remove item
 	void ItemRemoveModule();
+
+	//report module
+	void ReportModuleStaff();
 };
 
 #endif // !MODULE_H

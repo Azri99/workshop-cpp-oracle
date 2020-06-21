@@ -24,6 +24,8 @@ class Command : public Connection
 		string sqlAllStaff = "select (select TITLE from ROLE where ID = ROLE_ID) as ROLE , FIRSTNAME,LASTNAME,BIRTHDATE,EMAIL from STAFF";
 		string sqlConditionRemoveItem = "select count(FIRSTAID_CONTENT.ID) as COUNT from FIRSTAID_CONTENT join CONTENT on CONTENT.ID = FIRSTAID_CONTENT.CONTENT_ID join ITEM on ITEM.ID = CONTENT.ITEM_ID where ITEM.NAME = :NAME";
 		string sqlBorrowFirstaid_NoParam = "select PROGRAM.NAME, FIRSTAID_PROGRAM.DATE_APPROVE from FIRSTAID_PROGRAM join PROGRAM on FIRSTAID_PROGRAM.PROGRAM_ID = PROGRAM.ID where FIRSTAID_PROGRAM.DATE_RETURN is NULL";
+		string sqlGenerateReport_Staff = "select  PROGRAM.APPLICANT_ID, to_char(PROGRAM.DATE_START, 'mm Month'),FIRSTAID_PROGRAM.DATE_APPROVE, FIRSTAID_PROGRAM.DATE_RETURN from PROGRAM left join FIRSTAID_PROGRAM on PROGRAM.ID = FIRSTAID_PROGRAM.PROGRAM_ID";
+		string sqlGenerateReport_Applicant = "select  PROGRAM.APPLICANT_ID, to_char(PROGRAM.DATE_START, 'mm Month'),FIRSTAID_PROGRAM.DATE_APPROVE, FIRSTAID_PROGRAM.DATE_RETURN from PROGRAM left join FIRSTAID_PROGRAM on PROGRAM.ID = FIRSTAID_PROGRAM.PROGRAM_ID where PROGRAM.APPLICANT_ID = :APPLICANT";
 
 		string sqlnewApplicant = "insert into APPLICANT values (:ID, :FIRST, :LAST, :CONTACT, :TYPE)";
 		string sqlnewProgram = "insert into PROGRAM (APPLICANT_ID, NAME, DATE_APPLY , DATE_START, DATE_END, TOTAL_APPLY) values (:APPLICANT, :NAME, :DATEA, :DATES, :DATEE,  :TOTAL)";
@@ -221,6 +223,10 @@ public:
 		//input item 
 		//output null
 		void RemoveItem(Item);
+
+		vector<FirstAid_Program>GenerateReport();
+
+		vector<FirstAid_Program>GenerateReport(Applicant);
 };		
 
 #endif
