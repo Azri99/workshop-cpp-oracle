@@ -134,9 +134,6 @@ public:
 	//to remove item in inventory
 	void StaffRemoveModule();
 	
-	//to remove first box
-	void FirstaidRemoveModule();
-
 	//to remove item
 	void ItemRemoveModule();
 };

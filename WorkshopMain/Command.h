@@ -23,6 +23,7 @@ class Command : public Connection
 		string sqlAllFirstAid = "select * from FIRSTAID";
 		string sqlAllStaff = "select (select TITLE from ROLE where ID = ROLE_ID) as ROLE , FIRSTNAME,LASTNAME,BIRTHDATE,EMAIL from STAFF";
 		string sqlConditionRemoveItem = "select count(FIRSTAID_CONTENT.ID) as COUNT from FIRSTAID_CONTENT join CONTENT on CONTENT.ID = FIRSTAID_CONTENT.CONTENT_ID join ITEM on ITEM.ID = CONTENT.ITEM_ID where ITEM.NAME = :NAME";
+		string sqlBorrowFirstaid_NoParam = "select PROGRAM.NAME, FIRSTAID_PROGRAM.DATE_APPROVE from FIRSTAID_PROGRAM join PROGRAM on FIRSTAID_PROGRAM.PROGRAM_ID = PROGRAM.ID where FIRSTAID_PROGRAM.DATE_RETURN is NULL";
 
 		string sqlnewApplicant = "insert into APPLICANT values (:ID, :FIRST, :LAST, :CONTACT, :TYPE)";
 		string sqlnewProgram = "insert into PROGRAM (APPLICANT_ID, NAME, DATE_APPLY , DATE_START, DATE_END, TOTAL_APPLY) values (:APPLICANT, :NAME, :DATEA, :DATES, :DATEE,  :TOTAL)";
@@ -164,6 +165,8 @@ public:
 		//output list of first adi and program name
 		vector<FirstAid_Program> BorrowFirstaid(Applicant);
 
+		vector<FirstAid_Program> BorrowFirstaid();
+
 		//Update to status of the first aid after being return
 		//input program name
 		//output null
@@ -185,19 +188,38 @@ public:
 		//output null
 		vector<Staff> AllStaff();
 
-		//remove  first aid
-		//input first aid program name
+		//remove  staff
+		//input staff
 		//output null
 		void RemoveStaff(Staff);
 
+
+		//remove  first aid
+		//input first aid program name
+		//output null
 		void RemoveFirstAid(int);
 
+		//update return date of first aid
+		//input program 
+		//output null
 		void UpdateReturnDate(Program);
 
+
+		//check the condition of item that want to bee remove
+		//input item
+		//output 0 @ 1
 		int ConditionRemoveItem(Item);
 
+
+		//remove  item
+		//input item in the content
+		//output null
 		void RemoveItemContent(Item);
 
+
+		//remove  item in item
+		//input item 
+		//output null
 		void RemoveItem(Item);
 };		
 

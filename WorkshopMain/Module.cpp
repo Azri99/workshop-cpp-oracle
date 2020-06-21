@@ -973,7 +973,7 @@ void Module::FirstAidRefillModule() {
 	system("PAUSE");
 
 }
-//item delete kena settle
+
 void Module::ReturnFirstaidModule() {
 	HeaderModule("Return Firstaid Module");
 
@@ -1006,7 +1006,7 @@ void Module::ReturnFirstaidModule() {
 
 	reProgramName:
 	cout << "\t\tWhich program you want to return\n";
-	cout << "\t\tEnter program name";
+	cout << "\t\tEnter program name : ";
 
 	cin >> this->program.NAME;
 
@@ -1030,26 +1030,42 @@ void Module::FirstAidListModule() {
 	HeaderModule("FirstAid List Module");
 
 	auto result = this->command.AllFirstaid();
-
-	cout << "Number of first aid : " << result.size();
+	auto result_program = this->command.BorrowFirstaid();
 
 	cout << endl;
-	this->PrintElement("No Id");
-	this->PrintElement("Available?");
-	this->PrintLine(2);
-	for (auto x : result) {
-		this->PrintElement(x.ID);
-		x.STATUS == 2 ? this->PrintElement("Avaible") : this->PrintElement("Not Avaible");
-		this->PrintLine(2);
-	}
+	this->PrintElement("Total first aid");
+	this->PrintElement("Available");
+	this->PrintElement("Not Available");
+	this->PrintLine(3);
 	
+	cout << endl;
+	this->PrintElement(result.size());
+	this->PrintElement(count_if(result.begin(), result.end(),
+		[&](const FirstAid&s) {return s.STATUS == 2; }));
+	this->PrintElement(count_if(result.begin(), result.end(),
+		[&](const FirstAid&s) {return s.STATUS == 1; }));
+	this->PrintLine(3);
+
+	if (result_program.size() != 0) {
+		cout << endl;
+		this->PrintElement("Program");
+		this->PrintElement("Approve Date");
+		this->PrintLine(2);
+		for (auto x : result_program) {
+			cout << endl;
+			this->PrintElement(x.PROGRAM_ID.NAME);
+			this->PrintElement(x.DATE_APPROVE);
+			this->PrintLine(2);
+		}
+	}
+
+
 
 repeatChoose:
 	cout << "\n";
 	cout << "\t\tChoose you operation\n";
 	cout << "\t\t1 = Add New\n";
-	cout << "\t\t2 = Remove\n";
-	cout << "\t\t3 = Exit\n";
+	cout << "\t\t2 = Exit\n";
 	cout << "\t\tYour action :";
 	cin >> this->choose;
 
@@ -1064,9 +1080,6 @@ repeatChoose:
 		this->AidAddModule();
 		break;
 	case 2:
-		this->FirstaidRemoveModule();
-		break;
-	case 3:
 		this->ItemInventoryModule();
 		break;
 	default:
@@ -1166,47 +1179,6 @@ void Module::StaffRemoveModule() {
 	this->StaffListModule();
 }
 
-void Module::FirstaidRemoveModule() {
-	repeatFunction:
-	HeaderModule("First Aid Remove Module");
-
-	unordered_set<int> hold;
-	auto result = this->command.AllFirstaid();
-
-	cout << endl;
-	this->PrintElement("Code");
-	this->PrintLine(1);
-	for (auto x : result) {
-		if (x.STATUS == 2) {
-			cout << endl;
-			hold.insert(x.ID);
-			this->PrintElement(x.ID);
-			this->PrintLine(1);
-		}
-	}
-
-	cout << "\t\tEnter code to remove : ";
-	cin >> this->choose;
-
-	if (!this->command.ValidInteger(this->choose)) {
-		cout << this->validint;
-		cout << "\t\t";system("PAUSE");;
-		goto repeatFunction;
-	}
-
-	if (hold.find(this->choose) == hold.end()) {
-		cout << "\t\tInvalid Code\n";
-		cout << "\t\t";system("PAUSE");;
-		goto repeatFunction;
-	}
-
-	this->command.RemoveFirstAid(this->choose);
-	cout << "\t\tDone Remove\n";
-	cout << "\t\t";
-	system("PAUSE");
-	this->FirstAidListModule();
-
-}
 
 void Module::ItemRemoveModule() {
 	repeatFunction:

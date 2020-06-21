@@ -377,6 +377,25 @@ vector<FirstAid_Program> Command::BorrowFirstaid(Applicant applicant) {
 	return output;
 }
 
+vector<FirstAid_Program> Command::BorrowFirstaid() {
+	vector<FirstAid_Program> output;
+	FirstAid_Program temp;
+	OCI_Prepare(this->statement, OTEXT(&this->sqlBorrowFirstaid_NoParam[0]));
+
+	this->Execute();
+	this->result = OCI_GetResultset(this->statement);
+
+	while (OCI_FetchNext(this->result)) {
+		temp.PROGRAM_ID.NAME = OCI_GetString(this->result, 1);
+		temp.DATE_APPROVE = this->DateToString(OCI_GetDate(this->result, 2));
+
+		output.push_back(temp);
+	}
+
+	return output;
+}
+
+
 void Command::UpdateReturnFirstAid(Program program) {
 	OCI_Prepare(this->statement, OTEXT(&this->sqlupdateReturnFirstAid[0]));
 
