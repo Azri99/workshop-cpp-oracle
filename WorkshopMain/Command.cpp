@@ -566,3 +566,18 @@ vector<FirstAid_Program> Command::GenerateReport(Applicant applicant) {
 
 	return output;
 }
+
+int Command::ItemLimit(string itemName) {
+	int output;
+
+	OCI_Prepare(this->statement, OTEXT(&this->sqlItemLimit[0]));
+
+	OCI_BindString(this->statement, ":NAME", &itemName[0], this->charLen);
+
+	this->Execute();
+	this->result = OCI_GetResultset(this->statement);
+
+	if (OCI_FetchNext(this->result)) output = OCI_GetInt(this->result, 1);
+
+	return output;
+}

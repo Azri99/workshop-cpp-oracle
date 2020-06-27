@@ -738,8 +738,8 @@ void Module::RefillItemModule() {
 		goto repeatTotal;
 	}
 
-	if (this->content.TOTAL < 0 || this->content.TOTAL > 100) {
-		cout << "\t\tValue To big (>100) or small (<0)\n";
+	if (this->content.TOTAL <= 0 || this->content.TOTAL > 100) {
+		cout << "\t\tValue To big (>100) or small (<=0)\n";
 		cout << "\t\t";system("PAUSE");;
 		goto repeatTotal;
 	}
@@ -753,6 +753,12 @@ void Module::RefillItemModule() {
 		if (!this->command.ValidDate(this->content.DATE_EXP)) {
 			cout << this->validdate;
 			cout << "\t\t";system("PAUSE");;
+			goto repeatDate;
+		}
+
+		if (this->command.CompareDate(this->content.DATE_EXP) == 1) {
+			cout << "\t\tDate need to be higher\n";
+			cout << "\t\t"; system("PAUSE");
 			goto repeatDate;
 		}
 
@@ -782,7 +788,7 @@ repeatFunction:
 		goto repeatFunction;
 	}
 
-	if (this->faid.STATUS < 0 || this->faid.STATUS > 100) {
+	if (this->faid.STATUS <= 0 || this->faid.STATUS > 100) {
 		cout << "\t\tValue out of range (< 0) or (> 100)\n";
 		goto repeatFunction;
 	}
@@ -805,7 +811,7 @@ void Module::ApplicationModule() {
 
 	cout << "\t\t1 = List of application\n";
 	cout << "\t\t2 = Exit\n";
-	cout << "\t\tEnter your option [1, 2, 3, 4, 5] : ";
+	cout << "\t\tEnter your option [1, 2] : ";
 	cin >> this->choose;
 
 	if (!this->command.ValidInteger(this->choose)) {
@@ -949,6 +955,12 @@ void Module::FirstAidRefillModule() {
 			if (!this->command.ValidInteger(this->faidContent.TOTAL)) {
 				cout << this->validint;
 				cout << "\t\t";system("PAUSE");;
+				goto reItem;
+			}
+			if (this->faidContent.TOTAL > this->command.ItemLimit(x.NAME)) {
+				cout << this->validcom;
+				cout << "\t\tMax in the box is " << this->command.ItemLimit(x.NAME) << endl;
+				cout << "\t\t"; system("PAUSE");;
 				goto reItem;
 			}
 			if (this->faidContent.TOTAL > x.MAX_LIMIT) {
@@ -1121,6 +1133,12 @@ void Module::StaffListModule() {
 		this->PrintLine(4);
 	}
 
+	if (this->staff.ROLE_ID.TITLE == "Nurse") {
+		cout << "\t\t";
+		system("PAUSE");
+		this->StaffIndexModule();
+	}
+
 repeatChoose:
 	cout << "\n";
 	cout << "\t\tChoose you operation\n";
@@ -1236,7 +1254,6 @@ void Module::ItemRemoveModule() {
 }
 
 void Module::ReportModuleStaff() {
-	repeat:
 	HeaderModule("Report Module Staff");
 	
 	map<string, int> applicantNumberOfBorrow;
@@ -1245,17 +1262,13 @@ void Module::ReportModuleStaff() {
 	auto result = this->command.GenerateReport();
 
 	for (auto x : result) {
-		//section applicant number borrow start
 		if(applicantNumberOfBorrow.find(x.PROGRAM_ID.APPLICANT_ID.ID) == applicantNumberOfBorrow.end())
 			applicantNumberOfBorrow.insert(make_pair(x.PROGRAM_ID.APPLICANT_ID.ID, count_if(result.begin(), result.end(), 
 					[&](FirstAid_Program&s) {return s.PROGRAM_ID.APPLICANT_ID.ID == x.PROGRAM_ID.APPLICANT_ID.ID; })));
-		//section applicant number borrow end
 
-		//calculate month frequent start
 		if(frequentMonthBorrow.find(x.PROGRAM_ID.DATE_START) == frequentMonthBorrow.end())
 			frequentMonthBorrow.insert(make_pair(x.PROGRAM_ID.DATE_START, count_if(result.begin(), result.end(),
 				[&](FirstAid_Program&s) {return s.PROGRAM_ID.DATE_START == x.PROGRAM_ID.DATE_START; })));
-		//calculate month frequent end
 	}
 
 	cout << "\t\tProgram base on month";
@@ -1277,9 +1290,9 @@ void Module::ReportModuleStaff() {
 	this->PrintElement("Program Total");
 	this->PrintLine(3);
 	this->PrintElement(count_if(result.begin(), result.end(),
-			[&](FirstAid_Program&s) {return s.DATE_APPROVE != ""; }));
+			[&](FirstAid_Program&s) {return !s.DATE_APPROVE.empty(); }));
 	this->PrintElement(count_if(result.begin(), result.end(),
-			[&](FirstAid_Program&s) {return s.DATE_APPROVE == ""; }));
+			[&](FirstAid_Program&s) {return s.DATE_APPROVE.empty(); }));
 	this->PrintElement(result.size());
 	this->PrintLine(3);
 
@@ -1308,9 +1321,9 @@ void Module::ReportModuleApplicant() {
 	this->PrintElement("Program Total");
 	this->PrintLine(3);
 	this->PrintElement(count_if(result.begin(), result.end(),
-		[&](FirstAid_Program&s) {return s.DATE_APPROVE != ""; }));
+		[&](FirstAid_Program&s) {return !s.DATE_APPROVE.empty(); }));
 	this->PrintElement(count_if(result.begin(), result.end(),
-		[&](FirstAid_Program&s) {return s.DATE_APPROVE == ""; }));
+		[&](FirstAid_Program&s) {return s.DATE_APPROVE.empty(); }));
 	this->PrintElement(result.size());
 	this->PrintLine(3);
 

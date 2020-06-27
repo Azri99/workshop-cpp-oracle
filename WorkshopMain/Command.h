@@ -26,6 +26,7 @@ class Command : public Connection
 		string sqlBorrowFirstaid_NoParam = "select PROGRAM.NAME, FIRSTAID_PROGRAM.DATE_APPROVE from FIRSTAID_PROGRAM join PROGRAM on FIRSTAID_PROGRAM.PROGRAM_ID = PROGRAM.ID where FIRSTAID_PROGRAM.DATE_RETURN is NULL";
 		string sqlGenerateReport_Staff = "select  PROGRAM.APPLICANT_ID, to_char(PROGRAM.DATE_START, 'mm Month'),FIRSTAID_PROGRAM.DATE_APPROVE, FIRSTAID_PROGRAM.DATE_RETURN from PROGRAM left join FIRSTAID_PROGRAM on PROGRAM.ID = FIRSTAID_PROGRAM.PROGRAM_ID";
 		string sqlGenerateReport_Applicant = "select  PROGRAM.APPLICANT_ID, to_char(PROGRAM.DATE_START, 'mm Month'),FIRSTAID_PROGRAM.DATE_APPROVE, FIRSTAID_PROGRAM.DATE_RETURN from PROGRAM left join FIRSTAID_PROGRAM on PROGRAM.ID = FIRSTAID_PROGRAM.PROGRAM_ID where PROGRAM.APPLICANT_ID = :APPLICANT";
+		string sqlItemLimit = "select MAX_LIMIT from ITEM where NAME = :NAME";
 
 		string sqlnewApplicant = "insert into APPLICANT values (:ID, :FIRST, :LAST, :CONTACT, :TYPE)";
 		string sqlnewProgram = "insert into PROGRAM (APPLICANT_ID, NAME, DATE_APPLY , DATE_START, DATE_END, TOTAL_APPLY) values (:APPLICANT, :NAME, :DATEA, :DATES, :DATEE,  :TOTAL)";
@@ -224,9 +225,21 @@ public:
 		//output null
 		void RemoveItem(Item);
 
+		//Report generation
+		//input null
+		//output list of data
 		vector<FirstAid_Program>GenerateReport();
 
+
+		//Report generation
+		//input applicant 
+		//output list of data
 		vector<FirstAid_Program>GenerateReport(Applicant);
+
+		//item limit in first aid
+		//input item name
+		//output  of limit
+		int ItemLimit(string);
 };		
 
 #endif
