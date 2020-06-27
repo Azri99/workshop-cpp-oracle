@@ -541,8 +541,19 @@ void Module::StaffAddModule() {
 		goto reBirth;
 	}
 
+	rePass:
 	cout << "\t\tPassword  : ";
 	cin >> newStaff.PASSWORD;
+
+	if (!this->command.ValidPassword(newStaff.PASSWORD)) {
+		cout << "\t\tPassword must contain at least:\n";
+		cout << "\t\t8 to 10 charter\n";
+		cout << "\t\tCapital and Lower\n";
+		cout << "\t\tNumber\n";
+		cout << "\t\tSpecial Character\n";
+		cout << "\t\t"; system("PAUSE");;
+		goto rePass;
+	}
 
 	newStaff.EMAIL = newStaff.FIRSTNAME + newStaff.LASTNAME[0] + "@utem.edu.my";
 
@@ -957,7 +968,7 @@ void Module::FirstAidRefillModule() {
 				cout << "\t\t";system("PAUSE");;
 				goto reItem;
 			}
-			if (this->faidContent.TOTAL > this->command.ItemLimit(x.NAME)) {
+			if (this->faidContent.TOTAL <= 0 ||this->faidContent.TOTAL > this->command.ItemLimit(x.NAME)) {
 				cout << this->validcom;
 				cout << "\t\tMax in the box is " << this->command.ItemLimit(x.NAME) << endl;
 				cout << "\t\t"; system("PAUSE");;

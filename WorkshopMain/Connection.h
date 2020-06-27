@@ -42,6 +42,12 @@ public:
 	//output true @ false
 	bool ValidDate(string);
 
+
+	//validate if password true or false
+	//input data passord
+	//output true @ false
+	bool ValidPassword(string);
+
 	//encode & decode string
 	//input string  (raw)
 	//output string (encode)

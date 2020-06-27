@@ -53,6 +53,11 @@ bool Connection::ValidDate(string date) {
 	return regex_match(date, pattern);
 }
 
+bool Connection::ValidPassword(string password) {
+	const regex pattern("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,10}$");
+	return regex_match(password, pattern);
+}
+
 string Connection::Encrypt(string toEncrypt) {
 	string output = toEncrypt;
 
